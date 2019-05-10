@@ -26,10 +26,10 @@ fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
     .readTimeout(1, TimeUnit.MINUTES)
     .writeTimeout(1, TimeUnit.MINUTES)
     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-    .addInterceptor { chain ->
-        val request = chain.request().newBuilder().addHeader("", "").build()
-        chain.proceed(request)
-    }
+//    .addInterceptor { chain ->
+//        val request = chain.request().newBuilder().addHeader("", "").build()
+//        chain.proceed(request)
+//    }
     .build()
 
 fun configRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit =

@@ -10,6 +10,11 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("sites?key=KCTJhLJ5*JRozzNhBK20og((")
+    fun requestMenu(
+        @Query("pagesize") pageSize: Int
+    ): Observable<JsonObject>
+
+    @GET("sites?key=KCTJhLJ5*JRozzNhBK20og((")
     fun requestSite(
         @Query("page") order: Int,
         @Query("pagesize") sort: Int

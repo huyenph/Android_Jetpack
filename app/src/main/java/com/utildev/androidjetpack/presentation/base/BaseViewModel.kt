@@ -5,13 +5,20 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
+import com.google.gson.JsonObject
+import com.utildev.androidjetpack.common.extensions.REQUEST_ERROR
+import com.utildev.androidjetpack.data.remote.ApiClient
 import com.utildev.androidjetpack.data.repository.Repository
+import java.lang.reflect.Type
 
-abstract class BaseViewModel(private val repository: Repository): ViewModel() {
+@Suppress("LeakingThis")
+abstract class BaseViewModel(private val repository: Repository): ViewModel(), ApiClient.ResponseListener {
     val loadingView = ObservableInt(View.GONE)
     val msgViewVisible = ObservableInt(View.GONE)
     val message: ObservableField<String> = ObservableField()
     val enabledView = ObservableBoolean(false)
+
+    val apiClient = ApiClient(this)
 
     fun showLoading() {
         if (loadingView.get() != View.VISIBLE) {
@@ -38,5 +45,20 @@ abstract class BaseViewModel(private val repository: Repository): ViewModel() {
         if (msgViewVisible.get() != View.GONE) {
             msgViewVisible.set(View.GONE)
         }
+    }
+
+    override fun onSuccess(code: Int, type: Type?, response: JsonObject) {
+        dismissLoading()
+        hideMessage()
+    }
+
+    override fun onFailure() {
+        dismissLoading()
+        showMessage(REQUEST_ERROR)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        apiClient.dispose()
     }
 }

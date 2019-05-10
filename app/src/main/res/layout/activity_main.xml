@@ -14,8 +14,8 @@
             tools:context=".presentation.activity.MainActivity">
 
         <FrameLayout android:id="@+id/fmContainer"
-                     android:layout_width="0dp"
-                     android:layout_height="0dp"/>
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/actMain_rvOption"

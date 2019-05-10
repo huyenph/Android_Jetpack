@@ -5,7 +5,7 @@ import io.reactivex.Observable
 import okhttp3.RequestBody
 
 interface Repository {
-    fun getMenu(page: Int, pageSize: Int): Observable<JsonObject>
+    fun getMenu(pageSize: Int): Observable<JsonObject>
 
     fun getQuestion(site: String, page: Int): Observable<JsonObject>
 
