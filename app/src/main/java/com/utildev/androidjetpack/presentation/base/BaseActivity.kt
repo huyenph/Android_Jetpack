@@ -1,14 +1,19 @@
 package com.utildev.androidjetpack.presentation.base
 
 import android.graphics.Color
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import com.utildev.androidjetpack.R
+import com.utildev.androidjetpack.common.extensions.isNetworkAvailable
 
-abstract class BaseActivity: AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
     fun configNavigation(type: Int, elevation: Boolean, scrim: Boolean) {
         val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
         val content: FrameLayout = findViewById(R.id.fmContainer)
@@ -43,5 +48,95 @@ abstract class BaseActivity: AppCompatActivity() {
                 }
             }
         drawer.addDrawerListener(toggle)
+    }
+
+    fun configToolbarMain(view: View, title: String?) {
+        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
+        val ivNav: ImageView = view.findViewById(R.id.tbMain_ivNav)
+        val tvTitle: TextView = view.findViewById(R.id.tbMain_tvTitle)
+        tvTitle.text = title
+        ivNav.setOnClickListener {
+            drawer.openDrawer(GravityCompat.START)
+        }
+    }
+
+    fun configToolbar(view: View, title: String?, listener: BackStackListener?) {
+        val ivBack: ImageView = view.findViewById(R.id.tb_ivBack)
+        val tvTitle: TextView = view.findViewById(R.id.tb_tvTitle)
+        tvTitle.text = title
+        ivBack.setOnClickListener {
+            if (listener != null) {
+                listener.onBack()
+            } else {
+                clearStack()
+            }
+        }
+    }
+
+    private fun transactionFragment(
+        fragment: BaseFragment,
+        replace: Boolean,
+        addToBackStack: Boolean,
+        animation: Boolean
+    ) {
+        val fmTransaction = supportFragmentManager.beginTransaction()
+        if (animation) {
+            fmTransaction.setCustomAnimations(
+                R.anim.activity_new_in,
+                R.anim.activity_old_out,
+                R.anim.activity_old_in,
+                R.anim.activity_new_out
+            )
+        } else {
+            fmTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
+        if (replace) {
+            fmTransaction.replace(R.id.fmContainer, fragment, fragment::class.java.simpleName)
+        } else {
+            val currentFm = supportFragmentManager.findFragmentById(R.id.fmContainer) as BaseFragment?
+            if (currentFm != null) {
+                fmTransaction.hide(currentFm)
+            }
+            fmTransaction.add(R.id.fmContainer, fragment, fragment::class.java.simpleName)
+        }
+        if (addToBackStack) {
+            fmTransaction.addToBackStack(fragment::class.java.simpleName)
+        }
+        fmTransaction.commit()
+    }
+
+    fun replaceFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
+        transactionFragment(
+//            if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
+            fragment,
+            true,
+            addToBackStack,
+            animation
+        )
+    }
+
+    fun addFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
+        transactionFragment(
+//            if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
+            fragment,
+            false,
+            addToBackStack,
+            animation
+        )
+    }
+
+    fun clearAllStack() {
+        val fmCount = supportFragmentManager.backStackEntryCount
+        for (i in 0..fmCount) {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    fun clearStack() {
+        supportFragmentManager.popBackStack()
+    }
+
+    interface BackStackListener {
+        fun onBack()
     }
 }

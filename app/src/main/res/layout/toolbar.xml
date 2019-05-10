@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tb_clContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+        <ImageView android:id="@+id/tb_ivBack"
+                   android:layout_width="wrap_content"
+                   android:layout_height="0dp"
+                   android:src="@drawable/ic_arrow_back"
+                   android:padding="@dimen/_15dp"
+                   app:layout_constraintTop_toTopOf="parent"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   tools:ignore="ContentDescription"/>
+
+        <TextView android:id="@+id/tb_tvTitle"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/white"
+                  android:textSize="18sp"
+                  android:layout_marginStart="@dimen/_15dp"
+                  android:layout_marginEnd="@dimen/_15dp"
+                  android:ellipsize="end"
+                  android:maxLines="1"
+                  app:layout_constraintStart_toEndOf="@id/tb_ivBack"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.appbar.AppBarLayout>
