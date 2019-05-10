@@ -9,9 +9,5 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val host = NavHostFragment.create(R.navigation.nav_graph)
-        supportFragmentManager.beginTransaction().replace(R.id.fmContainer, host)
-            .setPrimaryNavigationFragment(host)
-            .commit()
     }
 }
