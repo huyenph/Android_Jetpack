@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 
-class BaseFragment: Fragment() {
+abstract class BaseFragment: Fragment() {
     private var fmResultListener: FragmentResultListener? = null
     private var requestCode = 0
 
