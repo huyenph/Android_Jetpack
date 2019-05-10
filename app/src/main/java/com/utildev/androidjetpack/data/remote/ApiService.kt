@@ -37,7 +37,7 @@ interface ApiService {
 //    fun requestNormal(@FieldMap body: Map<String, Any>): Observable<JsonObject>
 //
 //    @POST("storeList")
-//    fun requestList(@Body list: List<BaseModel>): Observable<JsonObject>
+//    fun requestList(@Body list: List<BaseViewModel>): Observable<JsonObject>
 //
 //    @GET("not params")
 //    fun requestNotParams(): Observable<JsonObject>

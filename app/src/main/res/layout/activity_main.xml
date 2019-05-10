@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fmContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity"/>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="vm"
+                  type="com.utildev.androidjetpack.presentation.activity.MainViewModel"/>
+    </data>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/actMain_dl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            tools:context=".presentation.activity.MainActivity">
+
+        <FrameLayout android:id="@+id/fmContainer"
+                     android:layout_width="0dp"
+                     android:layout_height="0dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/actMain_rvOption"
+                android:layout_width="@dimen/_280dp"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:background="@color/colorPrimary"
+                android:layout_gravity="start">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>
