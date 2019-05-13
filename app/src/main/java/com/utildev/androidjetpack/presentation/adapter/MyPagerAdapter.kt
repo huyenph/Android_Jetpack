@@ -1,6 +1,5 @@
 package com.utildev.androidjetpack.presentation.adapter
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.utildev.androidjetpack.presentation.base.BaseFragment
@@ -17,8 +16,7 @@ class MyPagerAdapter(fragmentManager: FragmentManager): FragmentPagerAdapter(fra
         return when(position) {
             0 -> FirstFragment.newInstance(0)
             1 -> SecondFragment.newInstance(1)
-            2 -> ThirdFragment.newInstance(2)
-            else -> FirstFragment.newInstance(0)
+            else -> ThirdFragment.newInstance(2)
         }
     }
 
@@ -27,4 +25,6 @@ class MyPagerAdapter(fragmentManager: FragmentManager): FragmentPagerAdapter(fra
     override fun getPageTitle(position: Int): CharSequence? {
         return "page $position"
     }
+
+
 }
