@@ -1,6 +1,8 @@
 package com.utildev.androidjetpack.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +22,4 @@ class FirstFragment: BaseFragment() {
         return inflater.inflate(R.layout.fragment_first, container, false)
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }
