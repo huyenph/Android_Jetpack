@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="tag"
+                  type="com.utildev.androidjetpack.data.remote.response.tag.TagItemResponse"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_10dp">
+
+        <TextView android:id="@+id/itTag_tvName"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@{tag.name}"
+                  android:textColor="@color/dark"
+                  android:textSize="18sp"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView android:id="@+id/itTag_tvCount"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@{String.valueOf(tag.count)}"
+                  android:textColor="@color/dark"
+                  android:textSize="18sp"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"/>
+
+        <include android:id="@+id/itTag_decorator"
+                 layout="@layout/view_decorator"
+                 android:layout_height="0.5dp"
+                 android:layout_width="0dp"
+                 android:layout_marginEnd="@dimen/_10dp"
+                 android:layout_marginStart="@dimen/_10dp"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintTop_toBottomOf="@id/itTag_tvName"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
