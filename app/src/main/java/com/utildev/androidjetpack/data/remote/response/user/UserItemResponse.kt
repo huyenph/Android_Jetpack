@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 
-class UserDataResponse : BaseModel() {
+class UserItemResponse : BaseModel() {
     @SerializedName("badge_counts")
     @Expose
     val badgeCounts: UserBadgeCountResponse? = null

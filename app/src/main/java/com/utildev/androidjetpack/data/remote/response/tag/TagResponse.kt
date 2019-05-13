@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 class TagResponse: BaseModel() {
     @SerializedName("items")
     @Expose
-    val items: ArrayList<TagDataResponse>? = null
+    val items: ArrayList<TagItemResponse>? = null
     @SerializedName("has_more")
     @Expose
     val hasMore: Boolean? = null

@@ -4,7 +4,7 @@ import com.utildev.androidjetpack.data.BaseModel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class TagDataResponse : BaseModel() {
+class TagItemResponse : BaseModel() {
     @SerializedName("has_synonyms")
     @Expose
     val hasSynonyms: Boolean? = null

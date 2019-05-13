@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="question"
+                  type="com.utildev.androidjetpack.data.remote.response.question.QuestionItemResponse"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/itQuestion_clContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5dp">
+
+        <ImageView android:id="@+id/itQuestion_ivAvatar"
+                   android:layout_width="@dimen/_40dp"
+                   android:layout_height="@dimen/_40dp"
+                   app:url_circle="@{question.owner.profileImage}"
+                   app:layout_constraintTop_toTopOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   tools:ignore="ContentDescription"/>
+
+        <TextView android:id="@+id/itQuestion_tvName"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_marginStart="@dimen/_10dp"
+                  android:layout_marginEnd="@dimen/_10dp"
+                  android:textColor="@color/dark"
+                  android:textSize="15sp"
+                  android:text="@{question.owner.displayName}"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintBottom_toTopOf="@id/itQuestion_tvTitle"
+                  app:layout_constraintStart_toEndOf="@id/itQuestion_ivAvatar"/>
+
+        <TextView android:id="@+id/itQuestion_tvTitle"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:padding="@dimen/_10dp"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textSize="20sp"
+                  android:text="@{question.title}"
+                  app:layout_constraintTop_toBottomOf="@id/itQuestion_ivAvatar"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView android:id="@+id/itQuestion_tvTag"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/dark"
+                  android:textSize="12sp"
+                  android:paddingStart="@dimen/_10dp"
+                  android:paddingEnd="@dimen/_10dp"
+                  android:text="@{question.convertTags()}"
+                  app:layout_constraintTop_toBottomOf="@id/itQuestion_tvTitle"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"/>
+
+        <include android:id="@+id/fmMain_decorator"
+                 layout="@layout/view_decorator"
+                 android:layout_height="0.5dp"
+                 android:layout_width="0dp"
+                 android:layout_margin="@dimen/_10dp"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintTop_toBottomOf="@id/itQuestion_tvTag"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
