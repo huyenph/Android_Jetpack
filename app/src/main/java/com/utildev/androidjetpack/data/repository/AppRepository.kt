@@ -8,10 +8,14 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import okhttp3.RequestBody
 
-class AppRepository(private val apiService: ApiService, private val dbDao: DBDao): Repository {
+class AppRepository(private val apiService: ApiService, private val dbDao: DBDao) : Repository {
+
     override fun getMenu(pageSize: Int): Observable<JsonObject> = apiService.requestMenu(pageSize)
 
     override fun getQuestion(site: String, page: Int): Observable<JsonObject> = apiService.requestQuestion(site, page)
+
+    override fun getTag(order: String, sort: String, site: String, page: Int): Observable<JsonObject> =
+        apiService.requestTag(order, sort, site, page)
 
     override fun getAllSite(page: Int): Observable<JsonObject> = apiService.requestAllSite(page)
 

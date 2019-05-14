@@ -7,7 +7,7 @@ import com.utildev.androidjetpack.data.BaseModel
 class QuestionResponse: BaseModel() {
     @SerializedName("items")
     @Expose
-   val items: MutableList<QuestionItemResponse>? = null
+   val items: ArrayList<QuestionItemResponse>? = null
     @SerializedName("has_more")
     @Expose
     val hasMore: Boolean = false

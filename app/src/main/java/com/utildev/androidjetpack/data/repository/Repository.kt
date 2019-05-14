@@ -11,6 +11,8 @@ interface Repository {
 
     fun getQuestion(site: String, page: Int): Observable<JsonObject>
 
+    fun getTag(order: String, sort: String, site: String, page: Int): Observable<JsonObject>
+
     fun getAllSite(page: Int): Observable<JsonObject>
 
     fun requestBody(body: RequestBody): Observable<JsonObject>

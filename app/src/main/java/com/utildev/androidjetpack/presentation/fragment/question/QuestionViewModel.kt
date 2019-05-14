@@ -11,11 +11,11 @@ import com.utildev.androidjetpack.presentation.base.BaseViewModel
 import java.lang.reflect.Type
 
 class QuestionViewModel(private val repository: Repository): BaseViewModel(repository) {
-    var questionLive: MutableLiveData<MutableList<QuestionItemResponse>> = MutableLiveData()
+    var questionLive: MutableLiveData<ArrayList<QuestionItemResponse>> = MutableLiveData()
 
     fun getQuestion(site: String, page: Int, loading: Boolean) {
         if (loading) showLoading()
-        apiClient.request(2, object : TypeToken<QuestionResponse>() {}.type, repository.getQuestion(site, page))
+        apiClient.request(1, object : TypeToken<QuestionResponse>() {}.type, repository.getQuestion(site, page))
     }
 
     override fun onSuccess(code: Int, type: Type?, response: JsonObject) {

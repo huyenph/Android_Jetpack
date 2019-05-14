@@ -57,7 +57,7 @@
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintEnd_toEndOf="parent"/>
 
-        <include android:id="@+id/fmMain_decorator"
+        <include android:id="@+id/itQuestion_decorator"
                  layout="@layout/view_decorator"
                  android:layout_height="0.5dp"
                  android:layout_width="0dp"
