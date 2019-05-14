@@ -1,62 +1,62 @@
 package com.utildev.androidjetpack.presentation.base
 
 import android.graphics.Color
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.common.extensions.isNetworkAvailable
+import com.utildev.androidjetpack.presentation.fragment.other.NotConnectionFragment
 
 abstract class BaseActivity : AppCompatActivity() {
-//    fun configNavigation(type: Int, elevation: Boolean, scrim: Boolean) {
-//        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
-//        val content: FrameLayout = findViewById(R.id.fmContainer)
-//        if (!scrim) drawer.setScrimColor(Color.TRANSPARENT)
-//        if (!elevation) drawer.drawerElevation = 0f
-//        val toggle =
-//            object : ActionBarDrawerToggle(this, drawer, R.string.open_navigation, R.string.close_navigation) {
-//                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-//                    super.onDrawerSlide(drawerView, slideOffset)
-//                    val slideX = drawerView.width * slideOffset
-//                    when (type) {
-//                        // Default
-//                        0 -> {
-//                        }
-//                        // Slide content
-//                        1 -> {
-//                            content.translationX = slideX
-//                        }
-//                        // Slide + scale full screen
-//                        2 -> {
-//                            content.translationX = slideX
-//                            content.scaleX = 1 - slideOffset
-//                            content.scaleY = 1 - slideOffset
-//                        }
-//                        // Slide + scale 1
-//                        3 -> {
-//                            content.translationX = slideX
-//                            content.scaleX = 1 - (slideOffset / 8f)
-//                            content.scaleY = 1 - (slideOffset / 8f)
-//                        }
-//                    }
-//                }
-//            }
-//        drawer.addDrawerListener(toggle)
-//    }
+    fun configNavigation(type: Int, elevation: Boolean, scrim: Boolean) {
+        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
+        val content: FrameLayout = findViewById(R.id.fmContainer)
+        if (!scrim) drawer.setScrimColor(Color.TRANSPARENT)
+        if (!elevation) drawer.drawerElevation = 0f
+        val toggle =
+            object : ActionBarDrawerToggle(this, drawer, R.string.open_navigation, R.string.close_navigation) {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                    super.onDrawerSlide(drawerView, slideOffset)
+                    val slideX = drawerView.width * slideOffset
+                    when (type) {
+                        // Default
+                        0 -> {
+                        }
+                        // Slide content
+                        1 -> {
+                            content.translationX = slideX
+                        }
+                        // Slide + scale full screen
+                        2 -> {
+                            content.translationX = slideX
+                            content.scaleX = 1 - slideOffset
+                            content.scaleY = 1 - slideOffset
+                        }
+                        // Slide + scale 1
+                        3 -> {
+                            content.translationX = slideX
+                            content.scaleX = 1 - (slideOffset / 8f)
+                            content.scaleY = 1 - (slideOffset / 8f)
+                        }
+                    }
+                }
+            }
+        drawer.addDrawerListener(toggle)
+    }
 
     fun configToolbarMain(view: View, title: String?) {
-//        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
+        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
         val ivNav: ImageView = view.findViewById(R.id.tbMain_ivNav)
         val tvTitle: TextView = view.findViewById(R.id.tbMain_tvTitle)
         tvTitle.text = title
         ivNav.setOnClickListener {
-//            drawer.openDrawer(GravityCompat.START)
+            drawer.openDrawer(GravityCompat.START)
         }
     }
 
@@ -91,13 +91,13 @@ abstract class BaseActivity : AppCompatActivity() {
             fmTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
         }
         if (replace) {
-//            fmTransaction.replace(R.id.fmContainer, fragment, fragment::class.java.simpleName)
+            fmTransaction.replace(R.id.fmContainer, fragment, fragment::class.java.simpleName)
         } else {
-//            val currentFm = supportFragmentManager.findFragmentById(R.id.fmContainer) as BaseFragment?
-//            if (currentFm != null) {
-//                fmTransaction.hide(currentFm)
-//            }
-//            fmTransaction.add(R.id.fmContainer, fragment, fragment::class.java.simpleName)
+            val currentFm = supportFragmentManager.findFragmentById(R.id.fmContainer) as BaseFragment?
+            if (currentFm != null) {
+                fmTransaction.hide(currentFm)
+            }
+            fmTransaction.add(R.id.fmContainer, fragment, fragment::class.java.simpleName)
         }
         if (addToBackStack) {
             fmTransaction.addToBackStack(fragment::class.java.simpleName)
@@ -107,8 +107,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     fun replaceFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
         transactionFragment(
-//            if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
-            fragment,
+            if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
             true,
             addToBackStack,
             animation
@@ -117,8 +116,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     fun addFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
         transactionFragment(
-//            if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
-            fragment,
+            if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
             false,
             addToBackStack,
             animation

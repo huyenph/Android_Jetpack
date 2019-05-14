@@ -1,9 +1,14 @@
 package com.utildev.androidjetpack.presentation.activity
 
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.data.remote.response.site.SiteItemResponse
 import com.utildev.androidjetpack.databinding.ActivityMainBinding
@@ -60,5 +65,37 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
         actMain_vp.adapter = pagerAdapter
         actMain_tl.setupWithViewPager(actMain_vp)
 
+        actMain_ivNav.setOnClickListener {
+            actMain_dl.openDrawer(GravityCompat.START)
+        }
+
+        actMain_tvTitle.text = "Stack Overflow"
+
+        actMain_vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    when(position) {
+                        0 -> {
+                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimaryDark)
+                            actMain_cl.background = ContextCompat.getDrawable(this@MainActivity, R.color.colorPrimary)
+                        }
+                        1 -> {
+                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.blueDark)
+                            actMain_cl.background = ContextCompat.getDrawable(this@MainActivity, R.color.blue)
+                        }
+                        2 -> {
+                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorAccentDark)
+                            actMain_cl.background = ContextCompat.getDrawable(this@MainActivity, R.color.colorAccent)
+                        }
+                    }
+                }
+            }
+        })
     }
 }

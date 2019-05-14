@@ -3,4 +3,6 @@
     <string name="open_navigation">Open navigation</string>
     <string name="close_navigation">Close navigation</string>
     <string name="all_sites">All Sites</string>
+    <string name="try_again">Try again</string>
+    <string name="no_internet_connection">No internet connection</string>
 </resources>
