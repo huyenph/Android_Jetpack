@@ -1,5 +1,7 @@
 package com.utildev.androidjetpack.presentation.activity
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -82,8 +84,18 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     when(position) {
                         0 -> {
-                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimaryDark)
-                            actMain_cl.background = ContextCompat.getDrawable(this@MainActivity, R.color.colorPrimary)
+                            val colorFrom = ContextCompat.getColor(this@MainActivity, R.color.blue)
+                            val colorTo = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
+                            val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                            colorAnimation.duration = 500
+                            colorAnimation.addUpdateListener { animation ->
+                                window.statusBarColor = animation!!.animatedValue as Int
+                                actMain_cl.setBackgroundColor(animation.animatedValue as Int)
+                            }
+                            colorAnimation.start()
+//                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimaryDark)
+//                            actMain_cl.setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.colorPrimary))
+//                            = ContextCompat.getDrawable(this@MainActivity, R.color.colorPrimary)
                         }
                         1 -> {
                             window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.blueDark)
