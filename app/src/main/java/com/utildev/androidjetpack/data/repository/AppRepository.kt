@@ -17,6 +17,9 @@ class AppRepository(private val apiService: ApiService, private val dbDao: DBDao
     override fun getTag(order: String, sort: String, site: String, page: Int): Observable<JsonObject> =
         apiService.requestTag(order, sort, site, page)
 
+    override fun getUser(order: String, sort: String, site: String, page: Int): Observable<JsonObject> =
+        apiService.requestUser(order, sort, site, page)
+
     override fun getAllSite(page: Int): Observable<JsonObject> = apiService.requestAllSite(page)
 
     override fun requestBody(body: RequestBody): Observable<JsonObject> = apiService.requestBody(body)

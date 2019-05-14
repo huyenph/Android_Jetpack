@@ -29,6 +29,12 @@ interface ApiService {
                    @Query("site") site: String,
                    @Query("page") page: Int): Observable<JsonObject>
 
+    @GET("users?key=KCTJhLJ5*JRozzNhBK20og((")
+    fun requestUser(@Query("order") order: String,
+                    @Query("sort") sort: String,
+                    @Query("site") site: String,
+                    @Query("page") page: Int): Observable<JsonObject>
+
     @GET("sites?key=KCTJhLJ5*JRozzNhBK20og((")
     fun requestAllSite(@Query("page") page: Int): Observable<JsonObject>
 
