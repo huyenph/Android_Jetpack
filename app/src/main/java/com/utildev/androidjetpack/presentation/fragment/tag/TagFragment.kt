@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,10 +14,10 @@ import com.utildev.androidjetpack.presentation.base.BaseFragment
 import com.utildev.androidjetpack.databinding.FragmentTagBinding
 import com.utildev.androidjetpack.presentation.adapter.TagAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
-import kotlinx.android.synthetic.main.fragment_question.view.*
 import kotlinx.android.synthetic.main.fragment_tag.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
+@Suppress("UNCHECKED_CAST")
 class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private val vm: TagViewModel by viewModel()
     private lateinit var mView: View
@@ -24,8 +25,8 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private var tagLm: GridLayoutManager? = null
     private var tagAdapter: TagAdapter? = null
     private var tags: ArrayList<TagItemResponse>? = null
-    private var siteParam = "stackoverflow"
-    private var page = 1
+    private var page = 0
+    private var prePos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +53,26 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
         return mView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val position = tagLm!!.findFirstVisibleItemPosition()
+        outState.putInt("tag_position", position)
+        outState.putInt("tag_page", page + 1)
+        outState.putSerializable("tag", tags)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            prePos = savedInstanceState.getInt("tag_position")
+            page = savedInstanceState.getInt("tag_page")
+            tags!!.addAll(savedInstanceState.getSerializable("tag") as ArrayList<TagItemResponse>)
+            tagAdapter!!.set(tags!!)
+            mView.fmTag_rv.smoothScrollToPosition(prePos)
+        } else {
+            prePos = 0
+            page = 1
+        }
         vm.getTag(page, true)
     }
 
@@ -68,7 +87,6 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     private fun init() {
-        page = 1
         tags = ArrayList()
         tagLm = GridLayoutManager(context, 1)
         tagAdapter = TagAdapter(mView.fmTag_rv, tagLm!!, this)

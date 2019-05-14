@@ -16,8 +16,8 @@ class MyPagerAdapter(fragmentManager: FragmentManager) :
 
     override fun getItem(position: Int): BaseFragment {
         return when (position) {
-            0 -> QuestionFragment()
-            1 -> TagFragment()
+            0 -> TagFragment()
+            1 -> QuestionFragment()
             else -> UserFragment()
         }
     }
@@ -26,8 +26,8 @@ class MyPagerAdapter(fragmentManager: FragmentManager) :
 
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position) {
-            0 -> "Questions"
-            1 -> "Tags"
+            0 -> "Tags"
+            1 -> "Questions"
             else -> "Users"
         }
     }

@@ -16,6 +16,7 @@ import com.utildev.androidjetpack.presentation.adapter.UserAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_user.view.*
 
+@Suppress("UNCHECKED_CAST")
 class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private val vm: UserViewModel by viewModel()
     private lateinit var mView: View
@@ -23,8 +24,8 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private var userLm: GridLayoutManager? = null
     private var userAdapter: UserAdapter? = null
     private var users: ArrayList<UserItemResponse>? = null
-    private var siteParam = "stackoverflow"
-    private var page = 1
+    private var page = 0
+    private var prePos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +52,26 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
         return mView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val position = userLm!!.findFirstVisibleItemPosition()
+        outState.putInt("user_position", position)
+        outState.putInt("user_page", page + 1)
+        outState.putSerializable("user", users)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            prePos = savedInstanceState.getInt("user_position")
+            page = savedInstanceState.getInt("user_page")
+            users!!.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
+            userAdapter!!.set(users!!)
+            mView.fmUser_rv.smoothScrollToPosition(prePos)
+        } else {
+            prePos = 0
+            page = 1
+        }
         vm.getUser(page, true)
     }
 
@@ -67,7 +86,6 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     private fun init() {
-        page = 1
         users = ArrayList()
         userLm = GridLayoutManager(context, 1)
         userAdapter = UserAdapter(mView.fmUser_rv, userLm!!, this)

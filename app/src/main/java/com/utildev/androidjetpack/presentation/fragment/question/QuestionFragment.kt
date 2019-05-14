@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,6 +17,7 @@ import com.utildev.androidjetpack.presentation.adapter.QuestionAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_question.view.*
 
+@Suppress("UNCHECKED_CAST")
 class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     private val vm: QuestionViewModel by viewModel()
     private lateinit var mView: View
@@ -24,7 +26,8 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     private var questionAdapter: QuestionAdapter? = null
     private var questions: ArrayList<QuestionItemResponse>? = null
     private var siteParam = "stackoverflow"
-    private var page = 1
+    private var page = 0
+    private var prePos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +54,26 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
         return mView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val position = questionLm!!.findFirstVisibleItemPosition()
+        outState.putInt("question_position", position)
+        outState.putInt("question_page", page + 1)
+        outState.putSerializable("question", questions)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            prePos = savedInstanceState.getInt("question_position")
+            page = savedInstanceState.getInt("question_page")
+            questions!!.addAll(savedInstanceState.getSerializable("question") as ArrayList<QuestionItemResponse>)
+            questionAdapter!!.set(questions!!)
+            mView.fmQuestion_rv.smoothScrollToPosition(prePos)
+        } else {
+            prePos = 0
+            page = 1
+        }
         vm.getQuestion(siteParam, page, true)
     }
 
@@ -67,19 +88,16 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     private fun init() {
-        if (arguments != null) {
-            configToolbar(mView, arguments!!.getString("name", ""), null)
-            siteParam = arguments!!.getString("param", "")
-        }
-        page = 1
         questions = ArrayList()
         questionLm = GridLayoutManager(context, 1)
         questionAdapter = QuestionAdapter(mView.fmQuestion_rv, questionLm, this)
+
         mView.fmQuestion_rv.run {
             layoutManager = questionLm
             adapter = questionAdapter
             setHasFixedSize(true)
         }
+
         mView.fmQuestion_srl.setOnRefreshListener {
             page = 1
             questions!!.clear()
