@@ -1,11 +1,18 @@
 package com.utildev.androidjetpack.presentation.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -47,6 +54,7 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
     override fun onLoadMore() {
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun init() {
 //        menuAdapter = MenuAdapter(actMain_rvOption, null, this)
 //        actMain_rvOption.run {
@@ -73,41 +81,67 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
 
         actMain_tvTitle.text = "Stack Overflow"
 
-        actMain_vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
+        val tab1 = (actMain_tl.getChildAt(0) as ViewGroup).getChildAt(0)
+        tab1.setOnTouchListener { _, event ->
+            if (event!!.action == MotionEvent.ACTION_UP) {
+                reveal(0, event.rawX, event.rawY)
             }
+            false
+        }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        val tab2 = (actMain_tl.getChildAt(0) as ViewGroup).getChildAt(1)
+        tab2.setOnTouchListener { _, event ->
+            if (event!!.action == MotionEvent.ACTION_UP) {
+                reveal(1, event.rawX, event.rawY)
             }
+            false
+        }
 
-            override fun onPageSelected(position: Int) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    when(position) {
-                        0 -> {
-                            val colorFrom = ContextCompat.getColor(this@MainActivity, R.color.blue)
-                            val colorTo = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
-                            val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                            colorAnimation.duration = 500
-                            colorAnimation.addUpdateListener { animation ->
-                                window.statusBarColor = animation!!.animatedValue as Int
-                                actMain_cl.setBackgroundColor(animation.animatedValue as Int)
-                            }
-                            colorAnimation.start()
-//                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimaryDark)
-//                            actMain_cl.setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.colorPrimary))
-//                            = ContextCompat.getDrawable(this@MainActivity, R.color.colorPrimary)
-                        }
-                        1 -> {
-                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.blueDark)
-                            actMain_cl.background = ContextCompat.getDrawable(this@MainActivity, R.color.blue)
-                        }
-                        2 -> {
-                            window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.colorAccentDark)
-                            actMain_cl.background = ContextCompat.getDrawable(this@MainActivity, R.color.colorAccent)
-                        }
-                    }
-                }
+        val tab3 = (actMain_tl.getChildAt(0) as ViewGroup).getChildAt(2)
+        tab3.setOnTouchListener { _, event ->
+            if (event!!.action == MotionEvent.ACTION_UP) {
+                reveal(2, event.rawX, event.rawY)
+            }
+            false
+        }
+
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun reveal(position: Int, x: Float, y: Float) {
+        actMain_reveal.visibility = View.VISIBLE
+        val revealX = actMain_reveal.width
+        val revealY = actMain_reveal.height
+        val radius = Math.max(revealX, revealY) * 1.2f
+        val reveal = ViewAnimationUtils.createCircularReveal(actMain_reveal, x.toInt(), y.toInt(), 0f, radius)
+
+        reveal.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                actMain_bg.setBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources, when (position) {
+                            0 -> R.color.colorPrimary
+                            1 -> R.color.blue
+                            else -> R.color.colorAccent
+                        }, theme
+                    )
+                )
+                actMain_reveal.visibility = View.INVISIBLE
             }
         })
+
+        actMain_reveal.setBackgroundColor(
+            ResourcesCompat.getColor(
+                resources, when (position) {
+                    0 -> R.color.colorPrimary
+                    1 -> R.color.blue
+                    else -> R.color.colorAccent
+                }, theme
+            )
+        )
+
+        reveal.start()
     }
 }

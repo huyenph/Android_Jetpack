@@ -14,76 +14,83 @@
             android:fitsSystemWindows="true"
             tools:context=".presentation.activity.MainActivity">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/fmContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/actMain_ab"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
+            <View android:id="@+id/actMain_bg"
+                  android:layout_width="0dp"
+                  android:layout_height="0dp"
+                  android:background="@color/colorPrimary"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintBottom_toTopOf="@id/actMain_vp"/>
+
+            <View android:id="@+id/actMain_reveal"
+                  android:layout_width="0dp"
+                  android:layout_height="0dp"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintBottom_toTopOf="@id/actMain_vp"
+                  android:visibility="invisible"/>
+
+            <LinearLayout
+                    android:id="@+id/actMain_ll"
+                    android:layout_width="0dp"
+                    android:layout_height="?android:actionBarSize"
+                    android:gravity="center|start"
+                    android:orientation="horizontal"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    tools:ignore="UseCompoundDrawables">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/actMain_cl"
-                        android:layout_width="match_parent"
-                        android:layout_height="?android:actionBarSize"
-                        app:layout_scrollFlags="scroll|enterAlways"
-                        android:background="@color/colorPrimary">
+                <ImageView android:id="@+id/actMain_ivNav"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:src="@drawable/ic_navigator"
+                           android:padding="@dimen/_15dp"
+                           tools:ignore="ContentDescription"/>
 
-                    <ImageView android:id="@+id/actMain_ivNav"
-                               android:layout_width="wrap_content"
-                               android:layout_height="0dp"
-                               android:src="@drawable/ic_navigator"
-                               android:padding="@dimen/_15dp"
-                               app:layout_constraintTop_toTopOf="parent"
-                               app:layout_constraintBottom_toBottomOf="parent"
-                               app:layout_constraintStart_toStartOf="parent"
-                               tools:ignore="ContentDescription"/>
+                <TextView android:id="@+id/actMain_tvTitle"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/white"
+                          android:textSize="18sp"
+                          android:ellipsize="end"
+                          android:maxLines="1"
+                          android:drawableEnd="@drawable/ic_arrow_drop_down"
+                          android:drawablePadding="@dimen/_10dp"
+                          android:layout_marginStart="@dimen/_15dp"/>
 
-                    <TextView android:id="@+id/actMain_tvTitle"
-                              android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:textColor="@color/white"
-                              android:textSize="18sp"
-                              android:ellipsize="end"
-                              android:maxLines="1"
-                              android:drawableEnd="@drawable/ic_arrow_drop_down"
-                              android:drawablePadding="@dimen/_10dp"
-                              android:layout_marginStart="@dimen/_15dp"
-                              app:layout_constraintTop_toTopOf="parent"
-                              app:layout_constraintBottom_toBottomOf="parent"
-                              app:layout_constraintStart_toEndOf="@id/actMain_ivNav"/>
+            </LinearLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/actMain_tl"
-                        android:layout_width="match_parent"
-                        android:layout_height="?android:actionBarSize"
-                        app:tabMode="fixed"
-                        android:background="@color/white"
-                        app:layout_constraintTop_toBottomOf="@id/actMain_ab"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-
-            </com.google.android.material.appbar.AppBarLayout>
+            <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/actMain_tl"
+                    android:layout_width="0dp"
+                    android:layout_height="?android:actionBarSize"
+                    app:tabMode="fixed"
+                    app:tabTextColor="#C7C7C7"
+                    app:tabSelectedTextColor="@color/white"
+                    app:tabRippleColor="@null"
+                    app:layout_constraintTop_toBottomOf="@id/actMain_ll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.viewpager.widget.ViewPager
                     android:id="@+id/actMain_vp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/actMain_ab"
+                    app:layout_constraintTop_toBottomOf="@id/actMain_tl"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/actMain_rvOption"
