@@ -16,7 +16,7 @@ import com.utildev.androidjetpack.presentation.adapter.QuestionAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_question.view.*
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     private val vm: QuestionViewModel by viewModel()
     private lateinit var mView: View
@@ -27,6 +27,14 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     private var siteParam = "stackoverflow"
     private var page = 0
     private var prePos = 0
+
+    companion object {
+        fun newInstance(site: String) = QuestionFragment().apply {
+            arguments = Bundle().apply {
+                putString("site", site)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +95,9 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     private fun init() {
+        if (arguments != null) {
+            siteParam = arguments!!.getString("site")
+        }
         questions = ArrayList()
         questionLm = GridLayoutManager(context, 1)
         questionAdapter = QuestionAdapter(mView.fmQuestion_rv, questionLm, this)

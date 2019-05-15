@@ -16,7 +16,7 @@ import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_tag.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private val vm: TagViewModel by viewModel()
     private lateinit var mView: View
@@ -26,6 +26,15 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private var tags: ArrayList<TagItemResponse>? = null
     private var page = 0
     private var prePos = 0
+    private var siteParam = "stackoverflow"
+
+    companion object {
+        fun newInstance(site: String) = TagFragment().apply {
+            arguments = Bundle().apply {
+                putString("site", site)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +81,7 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
             prePos = 0
             page = 1
         }
-        vm.getTag(page, true)
+        vm.getTag(siteParam, page, true)
     }
 
     override fun onItemClick(`object`: Any, position: Int) {}
@@ -82,10 +91,13 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     override fun onLoadMore() {
-        vm.getTag(++page, false)
+        vm.getTag(siteParam, ++page, false)
     }
 
     private fun init() {
+        if (arguments != null) {
+            siteParam = arguments!!.getString("site")
+        }
         tags = ArrayList()
         tagLm = GridLayoutManager(context, 1)
         tagAdapter = TagAdapter(mView.fmTag_rv, tagLm!!, this)
@@ -98,7 +110,7 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener {
             page = 1
             tags!!.clear()
             tagAdapter!!.set(tags!!)
-            vm.getTag(page, true)
+            vm.getTag(siteParam, page, true)
             mView.fmTag_srl.isRefreshing = false
         }
     }

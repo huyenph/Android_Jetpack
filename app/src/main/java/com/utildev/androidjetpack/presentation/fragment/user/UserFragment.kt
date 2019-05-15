@@ -16,7 +16,7 @@ import com.utildev.androidjetpack.presentation.adapter.UserAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_user.view.*
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private val vm: UserViewModel by viewModel()
     private lateinit var mView: View
@@ -26,6 +26,15 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     private var users: ArrayList<UserItemResponse>? = null
     private var page = 0
     private var prePos = 0
+    private var siteParam = "stackoverflow"
+
+    companion object {
+        fun newInstance(site: String) = UserFragment().apply {
+            arguments = Bundle().apply {
+                putString("site", site)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +81,7 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
             prePos = 0
             page = 1
         }
-        vm.getUser(page, true)
+        vm.getUser(siteParam, page, true)
     }
 
     override fun onItemClick(`object`: Any, position: Int) {}
@@ -82,10 +91,13 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     override fun onLoadMore() {
-        vm.getUser(++page, false)
+        vm.getUser(siteParam, ++page, false)
     }
 
     private fun init() {
+        if (arguments != null) {
+            siteParam = arguments!!.getString("site")
+        }
         users = ArrayList()
         userLm = GridLayoutManager(context, 1)
         userAdapter = UserAdapter(mView.fmUser_rv, userLm!!, this)
@@ -98,7 +110,7 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
             page = 1
             users!!.clear()
             userAdapter!!.set(users!!)
-            vm.getUser(page, true)
+            vm.getUser(siteParam, page, true)
             mView.fmUser_srl.isRefreshing = false
         }
     }

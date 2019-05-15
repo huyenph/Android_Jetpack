@@ -13,12 +13,12 @@ import java.lang.reflect.Type
 class TagViewModel(private val repository: Repository) : BaseViewModel(repository) {
     val tagLive: MutableLiveData<ArrayList<TagItemResponse>> = MutableLiveData()
 
-    fun getTag(page: Int, loading: Boolean) {
+    fun getTag(site: String, page: Int, loading: Boolean) {
         if (loading) showLoading()
         apiClient.request(
             2,
             object : TypeToken<TagResponse>() {}.type,
-            repository.getTag("desc", "popular", "stackoverflow", page)
+            repository.getTag("desc", "popular", site, page)
         )
     }
 

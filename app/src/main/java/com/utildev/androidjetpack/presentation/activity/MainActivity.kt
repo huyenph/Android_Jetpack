@@ -2,8 +2,6 @@ package com.utildev.androidjetpack.presentation.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
@@ -11,13 +9,11 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.viewpager.widget.ViewPager
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.data.remote.response.site.SiteItemResponse
 import com.utildev.androidjetpack.databinding.ActivityMainBinding
@@ -36,15 +32,22 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
 
     private lateinit var pagerAdapter: MyPagerAdapter
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.vm = vm
-//        configNavigation(0, elevation = true, scrim = true)
+        configNavigation(0, elevation = true, scrim = true)
         init()
     }
 
     override fun onItemClick(`object`: Any, position: Int) {
+        if (`object` is SiteItemResponse) {
+            pagerAdapter.siteParam = `object`.apiSiteParameter.toString()
+            actMain_tvTitle.text = `object`.name
+            pagerAdapter.notifyDataSetChanged()
+        }
+        actMain_dl.closeDrawer(GravityCompat.START)
     }
 
     override fun onItemLongClick(`object`: Any, position: Int): Boolean {
@@ -56,20 +59,20 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun init() {
-//        menuAdapter = MenuAdapter(actMain_rvOption, null, this)
-//        actMain_rvOption.run {
-//            layoutManager = menuLm
-//            setHasFixedSize(true)
-//            adapter = menuAdapter
-//        }
-//        vm.loadMenu()
-//        vm.menuLive.observe(this, Observer {
-//            if (it != null) {
-//                menus.addAll(it)
-//                menuAdapter!!.set(menus)
-//                menuAdapter!!.isLoading = true
-//            }
-//        })
+        menuAdapter = MenuAdapter(actMain_rvOption, null, this)
+        actMain_rvOption.run {
+            layoutManager = menuLm
+            setHasFixedSize(true)
+            adapter = menuAdapter
+        }
+        vm.loadMenu()
+        vm.menuLive.observe(this, Observer {
+            if (it != null) {
+                menus.addAll(it)
+                menuAdapter!!.set(menus)
+                menuAdapter!!.isLoading = true
+            }
+        })
 
         pagerAdapter = MyPagerAdapter(supportFragmentManager)
         actMain_vp.adapter = pagerAdapter

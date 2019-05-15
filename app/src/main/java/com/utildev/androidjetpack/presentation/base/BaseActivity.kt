@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.utildev.androidjetpack.R
@@ -16,7 +17,7 @@ import com.utildev.androidjetpack.presentation.fragment.other.NotConnectionFragm
 abstract class BaseActivity : AppCompatActivity() {
     fun configNavigation(type: Int, elevation: Boolean, scrim: Boolean) {
         val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
-        val content: FrameLayout = findViewById(R.id.fmContainer)
+        val content: CoordinatorLayout = findViewById(R.id.fmContainer)
         if (!scrim) drawer.setScrimColor(Color.TRANSPARENT)
         if (!elevation) drawer.drawerElevation = 0f
         val toggle =

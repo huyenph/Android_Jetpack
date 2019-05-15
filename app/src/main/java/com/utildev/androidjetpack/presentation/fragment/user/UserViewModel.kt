@@ -13,12 +13,12 @@ import java.lang.reflect.Type
 class UserViewModel(private val repository: Repository): BaseViewModel(repository) {
     val userLive: MutableLiveData<ArrayList<UserItemResponse>> = MutableLiveData()
 
-    fun getUser(page: Int, loading: Boolean) {
+    fun getUser(site: String, page: Int, loading: Boolean) {
         if (loading) showLoading()
         apiClient.request(
             3,
             object : TypeToken<UserResponse>() {}.type,
-            repository.getUser("desc", "reputation", "stackoverflow", page)
+            repository.getUser("desc", "reputation", site, page)
         )
     }
 
