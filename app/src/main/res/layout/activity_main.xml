@@ -93,7 +93,7 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.viewpager.widget.ViewPager
+            <com.utildev.androidjetpack.common.custom.NonSwipeableViewPager
                     android:id="@+id/actMain_vp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
