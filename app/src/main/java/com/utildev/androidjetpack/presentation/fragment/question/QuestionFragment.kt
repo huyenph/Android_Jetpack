@@ -12,29 +12,24 @@ import com.utildev.androidjetpack.data.remote.response.question.QuestionItemResp
 import com.utildev.androidjetpack.presentation.base.BaseFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 import com.utildev.androidjetpack.databinding.FragmentQuestionBinding
+import com.utildev.androidjetpack.presentation.activity.MainActivity
+import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.QuestionAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_question.view.*
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
+class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.FragmentUpdateListener {
+
     private val vm: QuestionViewModel by viewModel()
     private lateinit var mView: View
 
     private var questionLm: GridLayoutManager? = null
     private var questionAdapter: QuestionAdapter? = null
     private var questions: ArrayList<QuestionItemResponse>? = null
-    private var siteParam = "stackoverflow"
+
     private var page = 0
     private var prePos = 0
-
-    companion object {
-        fun newInstance(site: String) = QuestionFragment().apply {
-            arguments = Bundle().apply {
-                putString("site", site)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +59,7 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val position = questionLm!!.findFirstVisibleItemPosition()
+        outState.putString("question_site", (activity as MainActivity).siteParam)
         outState.putInt("question_position", position)
         outState.putInt("question_page", page + 1)
         outState.putSerializable("question", questions)
@@ -72,16 +68,22 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
-            prePos = savedInstanceState.getInt("question_position")
-            page = savedInstanceState.getInt("question_page")
-            questions!!.addAll(savedInstanceState.getSerializable("question") as ArrayList<QuestionItemResponse>)
-            questionAdapter!!.set(questions!!)
-            mView.fmQuestion_rv.smoothScrollToPosition(prePos)
+            val preSite = savedInstanceState.getString("question_site")
+            if (preSite == (activity as MainActivity).siteParam) {
+                prePos = savedInstanceState.getInt("question_position")
+                page = savedInstanceState.getInt("question_page")
+                questions!!.addAll(savedInstanceState.getSerializable("question") as ArrayList<QuestionItemResponse>)
+                questionAdapter!!.set(questions!!)
+                mView.fmQuestion_rv.smoothScrollToPosition(prePos)
+            } else {
+                prePos = 0
+                page = 1
+            }
         } else {
             prePos = 0
             page = 1
         }
-        vm.getQuestion(siteParam, page, true)
+        vm.getQuestion((activity as MainActivity).siteParam, page, true)
     }
 
     override fun onItemClick(`object`: Any, position: Int) {}
@@ -91,13 +93,18 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     override fun onLoadMore() {
-        vm.getQuestion(siteParam, ++page, false)
+        vm.getQuestion((activity as MainActivity).siteParam, ++page, false)
+    }
+
+    override fun onUpdate() {
+        page = 1
+        questions!!.clear()
+        questionAdapter!!.set(questions!!)
+        vm.getQuestion((activity as MainActivity).siteParam, page, true)
+        mView.fmQuestion_srl.isRefreshing = false
     }
 
     private fun init() {
-        if (arguments != null) {
-            siteParam = arguments!!.getString("site")
-        }
         questions = ArrayList()
         questionLm = GridLayoutManager(context, 1)
         questionAdapter = QuestionAdapter(mView.fmQuestion_rv, questionLm, this)
@@ -112,7 +119,7 @@ class QuestionFragment : BaseFragment(), BaseAdapter.AdapterListener {
             page = 1
             questions!!.clear()
             questionAdapter!!.set(questions!!)
-            vm.getQuestion(siteParam, page, true)
+            vm.getQuestion((activity as MainActivity).siteParam, page, true)
             mView.fmQuestion_srl.isRefreshing = false
         }
     }

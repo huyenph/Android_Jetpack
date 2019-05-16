@@ -5,4 +5,5 @@
     <string name="all_sites">All Sites</string>
     <string name="try_again">Try again</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="stack_overflow">Stack Overflow</string>
 </resources>

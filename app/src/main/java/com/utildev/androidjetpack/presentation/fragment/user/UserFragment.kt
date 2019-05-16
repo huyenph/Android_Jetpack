@@ -12,29 +12,23 @@ import com.utildev.androidjetpack.data.remote.response.user.UserItemResponse
 import com.utildev.androidjetpack.presentation.base.BaseFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 import com.utildev.androidjetpack.databinding.FragmentUserBinding
+import com.utildev.androidjetpack.presentation.activity.MainActivity
+import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.UserAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_user.view.*
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
+class UserFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.FragmentUpdateListener {
     private val vm: UserViewModel by viewModel()
     private lateinit var mView: View
 
     private var userLm: GridLayoutManager? = null
     private var userAdapter: UserAdapter? = null
     private var users: ArrayList<UserItemResponse>? = null
+
     private var page = 0
     private var prePos = 0
-    private var siteParam = "stackoverflow"
-
-    companion object {
-        fun newInstance(site: String) = UserFragment().apply {
-            arguments = Bundle().apply {
-                putString("site", site)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +58,7 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val position = userLm!!.findFirstVisibleItemPosition()
+        outState.putString("user_site", (activity as MainActivity).siteParam)
         outState.putInt("user_position", position)
         outState.putInt("user_page", page + 1)
         outState.putSerializable("user", users)
@@ -72,16 +67,22 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
-            prePos = savedInstanceState.getInt("user_position")
-            page = savedInstanceState.getInt("user_page")
-            users!!.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
-            userAdapter!!.set(users!!)
-            mView.fmUser_rv.smoothScrollToPosition(prePos)
+            val preSite = savedInstanceState.getString("user_site")
+            if (preSite == (activity as MainActivity).siteParam) {
+                prePos = savedInstanceState.getInt("user_position")
+                page = savedInstanceState.getInt("user_page")
+                users!!.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
+                userAdapter!!.set(users!!)
+                mView.fmUser_rv.smoothScrollToPosition(prePos)
+            } else {
+                prePos = 0
+                page = 1
+            }
         } else {
             prePos = 0
             page = 1
         }
-        vm.getUser(siteParam, page, true)
+        vm.getUser((activity as MainActivity).siteParam, page, true)
     }
 
     override fun onItemClick(`object`: Any, position: Int) {}
@@ -91,13 +92,18 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
     }
 
     override fun onLoadMore() {
-        vm.getUser(siteParam, ++page, false)
+        vm.getUser((activity as MainActivity).siteParam, ++page, false)
+    }
+
+    override fun onUpdate() {
+        page = 1
+        users!!.clear()
+        userAdapter!!.set(users!!)
+        vm.getUser((activity as MainActivity).siteParam, page, true)
+        mView.fmUser_srl.isRefreshing = false
     }
 
     private fun init() {
-        if (arguments != null) {
-            siteParam = arguments!!.getString("site")
-        }
         users = ArrayList()
         userLm = GridLayoutManager(context, 1)
         userAdapter = UserAdapter(mView.fmUser_rv, userLm!!, this)
@@ -110,7 +116,7 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener {
             page = 1
             users!!.clear()
             userAdapter!!.set(users!!)
-            vm.getUser(siteParam, page, true)
+            vm.getUser((activity as MainActivity).siteParam, page, true)
             mView.fmUser_srl.isRefreshing = false
         }
     }

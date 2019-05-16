@@ -32,6 +32,8 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
 
     private lateinit var pagerAdapter: MyPagerAdapter
 
+    var siteParam = "stackoverflow"
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,7 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
 
     override fun onItemClick(`object`: Any, position: Int) {
         if (`object` is SiteItemResponse) {
-            pagerAdapter.siteParam = `object`.apiSiteParameter.toString()
+            siteParam = `object`.apiSiteParameter.toString()
             actMain_tvTitle.text = `object`.name
             pagerAdapter.notifyDataSetChanged()
         }
@@ -82,7 +84,7 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
             actMain_dl.openDrawer(GravityCompat.START)
         }
 
-        actMain_tvTitle.text = "Stack Overflow"
+        actMain_tvTitle.text = getString(R.string.stack_overflow)
 
         val tab1 = (actMain_tl.getChildAt(0) as ViewGroup).getChildAt(0)
         tab1.setOnTouchListener { _, event ->
