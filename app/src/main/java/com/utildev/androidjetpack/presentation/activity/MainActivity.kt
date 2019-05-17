@@ -47,6 +47,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
             adapter = menuAdapter
         }
         vm.loadMenu()
+//        vm.loadSites()
         vm.menuLive.observe(this, Observer {
             if (it != null) {
                 menus.addAll(it)

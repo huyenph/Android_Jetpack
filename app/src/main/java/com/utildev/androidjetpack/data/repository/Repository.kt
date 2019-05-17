@@ -5,6 +5,7 @@ import com.utildev.androidjetpack.data.local.model.UserEntity
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import okhttp3.RequestBody
+import retrofit2.Call
 
 interface Repository {
     fun getMenu(pageSize: Int): Observable<JsonObject>
@@ -15,7 +16,7 @@ interface Repository {
 
     fun getUser(order: String, sort: String, site: String, page: Int): Observable<JsonObject>
 
-    fun getAllSite(page: Int): Observable<JsonObject>
+    fun getAllSite(page: Int): Call<JsonObject>
 
     fun requestBody(body: RequestBody): Observable<JsonObject>
 

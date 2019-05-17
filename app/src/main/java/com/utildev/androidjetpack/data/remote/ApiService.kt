@@ -3,6 +3,7 @@ package com.utildev.androidjetpack.data.remote
 import com.google.gson.JsonObject
 import io.reactivex.Observable
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -36,7 +37,7 @@ interface ApiService {
                     @Query("page") page: Int): Observable<JsonObject>
 
     @GET("sites?key=KCTJhLJ5*JRozzNhBK20og((")
-    fun requestAllSite(@Query("page") page: Int): Observable<JsonObject>
+    fun requestAllSite(@Query("page") page: Int): Call<JsonObject>
 
     @POST("")
     fun requestBody(@Body body: RequestBody): Observable<JsonObject>

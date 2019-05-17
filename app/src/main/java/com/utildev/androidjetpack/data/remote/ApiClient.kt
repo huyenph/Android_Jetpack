@@ -5,6 +5,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.reflect.Type
 
 class ApiClient(private val responseListener: ResponseListener) {
@@ -20,6 +23,18 @@ class ApiClient(private val responseListener: ResponseListener) {
                 responseListener.onFailure()
             })
         compositeDisposable.add(disposable)
+    }
+
+    fun requestSites(code: Int, type: Type?, call: Call<JsonObject>) {
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                response.body()?.let { responseListener.onSuccess(code, type, it) }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                responseListener.onFailure()
+            }
+        })
     }
 
     fun dispose() {

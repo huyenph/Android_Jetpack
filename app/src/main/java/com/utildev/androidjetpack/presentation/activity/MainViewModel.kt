@@ -17,6 +17,10 @@ class MainViewModel(private val repository: Repository): BaseViewModel(repositor
         apiClient.request(5, object : TypeToken<SiteResponse>() {}.type, repository.getMenu(10))
     }
 
+    fun loadSites() {
+        apiClient.requestSites(6, object : TypeToken<SiteResponse>() {}.type, repository.getAllSite(1))
+    }
+
     override fun onSuccess(code: Int, type: Type?, response: JsonObject) {
         super.onSuccess(code, type, response)
         val site = Gson().fromJson(response, type) as SiteResponse
