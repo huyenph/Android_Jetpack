@@ -3,10 +3,7 @@ package com.utildev.androidjetpack.presentation.activity
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Build
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewAnimationUtils
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
@@ -120,6 +117,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
         reveal.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 super.onAnimationEnd(animation)
+                window.statusBarColor = ResourcesCompat.getColor(
+                    resources, when (position) {
+                        0 -> R.color.colorPrimaryDark
+                        1 -> R.color.blueDark
+                        else -> R.color.colorAccentDark
+                    }, theme
+                )
+
                 actMain_bg.setBackgroundColor(
                     ResourcesCompat.getColor(
                         resources, when (position) {
@@ -132,6 +137,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
                 actMain_reveal.visibility = View.INVISIBLE
             }
         })
+
+        window.statusBarColor = ResourcesCompat.getColor(
+            resources, when (position) {
+                0 -> R.color.colorPrimaryDark
+                1 -> R.color.blueDark
+                else -> R.color.colorAccentDark
+            }, theme
+        )
 
         actMain_reveal.setBackgroundColor(
             ResourcesCompat.getColor(
