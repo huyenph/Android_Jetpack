@@ -1,22 +1,29 @@
 package com.utildev.androidjetpack.presentation.fragment.other
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.utildev.androidjetpack.R
-import com.utildev.androidjetpack.presentation.base.BaseActivity
+import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_not_connection.view.*
+import com.utildev.androidjetpack.databinding.FragmentNotConnectionBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class NotConnectionFragment: BaseFragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_not_connection, container, false)
-        view.fmNoConnection_btRetry.setOnClickListener {
-            val intent = (activity as BaseActivity<*, *>).intent
-            (activity as BaseActivity<*, *>).finish()
-            (activity as BaseActivity<*, *>).startActivity(intent)
+class NotConnectionFragment: BaseFragment<FragmentNotConnectionBinding, NotConnectionViewModel>() {
+    private val vm: NotConnectionViewModel by viewModel()
+    private lateinit var binding: FragmentNotConnectionBinding
+
+    override fun getLayoutId(): Int = R.layout.fragment_not_connection
+
+    override fun getBindingVariable(): Int? = null
+
+    override fun getViewModel(): NotConnectionViewModel? = null
+
+    override fun init(view: View) {
+        binding = getViewDataBinding() as FragmentNotConnectionBinding
+
+        binding.fmNoConnectionBtRetry.setOnClickListener {
+            val intent = (activity as MainActivity).intent
+            (activity as MainActivity).finish()
+            (activity as MainActivity).startActivity(intent)
         }
-        return view
     }
 }

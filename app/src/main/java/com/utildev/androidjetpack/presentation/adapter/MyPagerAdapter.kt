@@ -14,7 +14,7 @@ class MyPagerAdapter(fragmentManager: FragmentManager) :
         const val NUM_ITEM = 3
     }
 
-    override fun getItem(position: Int): BaseFragment {
+    override fun getItem(position: Int): BaseFragment<*, *> {
         return when (position) {
 //            0 -> TagFragment()
 //            1 -> QuestionFragment()
@@ -36,7 +36,7 @@ class MyPagerAdapter(fragmentManager: FragmentManager) :
     }
 
     override fun getItemPosition(`object`: Any): Int {
-        when(val fm = `object` as BaseFragment) {
+        when(val fm = `object` as BaseFragment<*, *>) {
             is TagFragment -> fm.onUpdate()
             is QuestionFragment -> fm.onUpdate()
             is UserFragment -> fm.onUpdate()

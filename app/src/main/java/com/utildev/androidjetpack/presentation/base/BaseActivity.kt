@@ -23,7 +23,7 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
     @LayoutRes
     abstract fun getLayoutId(): Int
 
-    abstract fun getBindingVariable(): Int
+    abstract fun getBindingVariable(): Int?
 
     abstract fun getViewModel(): V?
 
@@ -33,7 +33,7 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, getLayoutId())
         if (getViewModel() != null) {
-            binding.setVariable(getBindingVariable(), getViewModel())
+            getBindingVariable()?.let { binding.setVariable(it, getViewModel()) }
             binding.executePendingBindings()
         }
         init()
@@ -118,7 +118,7 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
         if (replace) {
             fmTransaction.replace(R.id.fmContainer, fragment, fragment::class.java.simpleName)
         } else {
-            val currentFm = supportFragmentManager.findFragmentById(R.id.fmContainer) as BaseFragment?
+            val currentFm = supportFragmentManager.findFragmentById(R.id.fmContainer) as BaseFragment<*, *>?
             if (currentFm != null) {
                 fmTransaction.hide(currentFm)
             }

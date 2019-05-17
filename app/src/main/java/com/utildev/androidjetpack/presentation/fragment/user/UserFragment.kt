@@ -1,12 +1,10 @@
 package com.utildev.androidjetpack.presentation.fragment.user
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.utildev.androidjetpack.BR
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.data.remote.response.user.UserItemResponse
 import com.utildev.androidjetpack.presentation.base.BaseFragment
@@ -16,12 +14,13 @@ import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.UserAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
-import kotlinx.android.synthetic.main.fragment_user.view.*
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class UserFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.FragmentUpdateListener {
+class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAdapter.AdapterListener,
+    MyPagerAdapter.FragmentUpdateListener {
+
     private val vm: UserViewModel by viewModel()
-    private lateinit var mView: View
+    private lateinit var binding: FragmentUserBinding
 
     private var userLm: GridLayoutManager? = null
     private var userAdapter: UserAdapter? = null
@@ -46,13 +45,32 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding: FragmentUserBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_user, container, false)
-        binding.vm = vm
-        mView = binding.root
-        init()
-        return mView
+    override fun getLayoutId(): Int = R.layout.fragment_user
+
+    override fun getBindingVariable(): Int? = BR.vm
+
+    override fun getViewModel(): UserViewModel? = vm
+
+    override fun init(view: View) {
+        binding = getViewDataBinding() as FragmentUserBinding
+
+        users = ArrayList()
+        userLm = GridLayoutManager(context, 1)
+        userAdapter = UserAdapter(binding.fmUserRv, userLm!!, this)
+
+        binding.fmUserRv.run {
+            layoutManager = userLm
+            adapter = userAdapter
+            setHasFixedSize(true)
+        }
+
+        binding.fmUserSrl.setOnRefreshListener {
+            page = 1
+            users!!.clear()
+            userAdapter!!.set(users!!)
+            vm.getUser((activity as MainActivity).siteParam, page, true)
+            binding.fmUserSrl.isRefreshing = false
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -73,7 +91,7 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.
                 page = savedInstanceState.getInt("user_page")
                 users!!.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
                 userAdapter!!.set(users!!)
-                mView.fmUser_rv.smoothScrollToPosition(prePos)
+                binding.fmUserRv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
                 page = 1
@@ -100,24 +118,6 @@ class UserFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.
         users!!.clear()
         userAdapter!!.set(users!!)
         vm.getUser((activity as MainActivity).siteParam, page, true)
-        mView.fmUser_srl.isRefreshing = false
-    }
-
-    private fun init() {
-        users = ArrayList()
-        userLm = GridLayoutManager(context, 1)
-        userAdapter = UserAdapter(mView.fmUser_rv, userLm!!, this)
-        mView.fmUser_rv.run {
-            layoutManager = userLm
-            adapter = userAdapter
-            setHasFixedSize(true)
-        }
-        mView.fmUser_srl.setOnRefreshListener {
-            page = 1
-            users!!.clear()
-            userAdapter!!.set(users!!)
-            vm.getUser((activity as MainActivity).siteParam, page, true)
-            mView.fmUser_srl.isRefreshing = false
-        }
+        binding.fmUserSrl.isRefreshing = false
     }
 }

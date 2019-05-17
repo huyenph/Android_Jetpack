@@ -25,6 +25,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAdapter.AdapterListener {
     private val vm: MainViewModel by viewModel()
+
     private val menuLm = GridLayoutManager(this, 1)
     private var menuAdapter: MenuAdapter? = null
     private var menus: MutableList<SiteItemResponse> = ArrayList()
@@ -35,7 +36,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
 
     override fun getLayoutId(): Int = R.layout.activity_main
 
-    override fun getBindingVariable(): Int = BR.vm
+    override fun getBindingVariable(): Int? = BR.vm
 
     override fun getViewModel(): MainViewModel? = vm
 

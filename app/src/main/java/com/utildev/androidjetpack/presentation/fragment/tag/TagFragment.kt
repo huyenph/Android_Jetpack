@@ -1,10 +1,7 @@
 package com.utildev.androidjetpack.presentation.fragment.tag
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.utildev.androidjetpack.BR
@@ -16,13 +13,14 @@ import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.TagAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
-import kotlinx.android.synthetic.main.fragment_tag.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class TagFragment: BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapter.AdapterListener, MyPagerAdapter.FragmentUpdateListener {
+class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapter.AdapterListener,
+    MyPagerAdapter.FragmentUpdateListener {
+
     private val vm: TagViewModel by viewModel()
-//    private lateinit var mView: View
+    private lateinit var binding: FragmentTagBinding
 
     private var tagLm: GridLayoutManager? = null
     private var tagAdapter: TagAdapter? = null
@@ -31,11 +29,25 @@ class TagFragment: BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapter
     private var page = 0
     private var prePos = 0
 
-    private lateinit var binding: FragmentTagBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        vm.tagLive.observe(this, Observer {
+            if (it != null) {
+                if (it.size == 0) {
+                    tagAdapter!!.isEndList = true
+                    tagAdapter!!.notifyDataSetChanged()
+                } else {
+                    tags!!.addAll(it)
+                    tagAdapter!!.set(tags!!)
+                    tagAdapter!!.isLoading = true
+                }
+            }
+        })
+    }
 
     override fun getLayoutId(): Int = R.layout.fragment_tag
 
-    override fun getBindingVariable(): Int = BR.vm
+    override fun getBindingVariable(): Int? = BR.vm
 
     override fun getViewModel(): TagViewModel? = vm
 
@@ -59,31 +71,6 @@ class TagFragment: BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapter
             binding.fmTagSrl.isRefreshing = false
         }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        vm.tagLive.observe(this, Observer {
-            if (it != null) {
-                if (it.size == 0) {
-                    tagAdapter!!.isEndList = true
-                    tagAdapter!!.notifyDataSetChanged()
-                } else {
-                    tags!!.addAll(it)
-                    tagAdapter!!.set(tags!!)
-                    tagAdapter!!.isLoading = true
-                }
-            }
-        })
-    }
-
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        binding =
-//            DataBindingUtil.inflate(inflater, R.layout.fragment_tag, container, false)
-//        binding.vm = vm
-//        mView = binding.root
-//        init()
-//        return mView
-//    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -134,8 +121,4 @@ class TagFragment: BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapter
             binding.fmTagSrl.isRefreshing = false
         }
     }
-
-//    private fun init() {
-//
-//    }
 }
