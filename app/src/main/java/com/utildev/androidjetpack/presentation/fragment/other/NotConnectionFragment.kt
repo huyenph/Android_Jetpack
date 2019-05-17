@@ -13,9 +13,9 @@ class NotConnectionFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_not_connection, container, false)
         view.fmNoConnection_btRetry.setOnClickListener {
-            val intent = (activity as BaseActivity).intent
-            (activity as BaseActivity).finish()
-            (activity as BaseActivity).startActivity(intent)
+            val intent = (activity as BaseActivity<*, *>).intent
+            (activity as BaseActivity<*, *>).finish()
+            (activity as BaseActivity<*, *>).startActivity(intent)
         }
         return view
     }

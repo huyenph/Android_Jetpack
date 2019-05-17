@@ -3,7 +3,6 @@ package com.utildev.androidjetpack.presentation.activity
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Build
-import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -11,9 +10,9 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.utildev.androidjetpack.BR
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.data.remote.response.site.SiteItemResponse
 import com.utildev.androidjetpack.databinding.ActivityMainBinding
@@ -24,7 +23,7 @@ import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAdapter.AdapterListener {
     private val vm: MainViewModel by viewModel()
     private val menuLm = GridLayoutManager(this, 1)
     private var menuAdapter: MenuAdapter? = null
@@ -34,33 +33,15 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
 
     var siteParam = "stackoverflow"
 
+    override fun getLayoutId(): Int = R.layout.activity_main
+
+    override fun getBindingVariable(): Int = BR.vm
+
+    override fun getViewModel(): MainViewModel? = vm
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.vm = vm
+    override fun init() {
         configNavigation(0, elevation = true, scrim = true)
-        init()
-    }
-
-    override fun onItemClick(`object`: Any, position: Int) {
-        if (`object` is SiteItemResponse) {
-            siteParam = `object`.apiSiteParameter.toString()
-            actMain_tvTitle.text = `object`.name
-            pagerAdapter.notifyDataSetChanged()
-        }
-        actMain_dl.closeDrawer(GravityCompat.START)
-    }
-
-    override fun onItemLongClick(`object`: Any, position: Int): Boolean {
-        return false
-    }
-
-    override fun onLoadMore() {
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun init() {
         menuAdapter = MenuAdapter(actMain_rvOption, null, this)
         actMain_rvOption.run {
             layoutManager = menuLm
@@ -109,8 +90,22 @@ class MainActivity : BaseActivity(), BaseAdapter.AdapterListener {
             }
             false
         }
+    }
 
+    override fun onItemClick(`object`: Any, position: Int) {
+        if (`object` is SiteItemResponse) {
+            siteParam = `object`.apiSiteParameter.toString()
+            actMain_tvTitle.text = `object`.name
+            pagerAdapter.notifyDataSetChanged()
+        }
+        actMain_dl.closeDrawer(GravityCompat.START)
+    }
 
+    override fun onItemLongClick(`object`: Any, position: Int): Boolean {
+        return false
+    }
+
+    override fun onLoadMore() {
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

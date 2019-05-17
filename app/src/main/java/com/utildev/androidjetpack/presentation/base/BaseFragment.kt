@@ -9,14 +9,14 @@ abstract class BaseFragment: Fragment() {
     private var requestCode = 0
 
     fun configToolbarMain(view: View, title: String?) {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).configToolbarMain(view, title)
+        if (activity is BaseActivity<*, *>) {
+            (activity as BaseActivity<*, *>).configToolbarMain(view, title)
         }
     }
 
     fun configToolbar(view: View, title: String?, listener: BaseActivity.BackStackListener?) {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).configToolbar(view, title, listener)
+        if (activity is BaseActivity<*, *>) {
+            (activity as BaseActivity<*, *>).configToolbar(view, title, listener)
         }
     }
 
@@ -32,26 +32,26 @@ abstract class BaseFragment: Fragment() {
     }
 
     fun replaceFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).replaceFragment(fragment, addToBackStack, animation)
+        if (activity is BaseActivity<*, *>) {
+            (activity as BaseActivity<*, *>).replaceFragment(fragment, addToBackStack, animation)
         }
     }
 
     fun addFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).addFragment(fragment, addToBackStack, animation)
+        if (activity is BaseActivity<*, *>) {
+            (activity as BaseActivity<*, *>).addFragment(fragment, addToBackStack, animation)
         }
     }
 
     fun clearAllStack() {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).clearAllStack()
+        if (activity is BaseActivity<*, *>) {
+            (activity as BaseActivity<*, *>).clearAllStack()
         }
     }
 
     fun clearStack() {
-        if (activity is BaseActivity) {
-            (activity as BaseActivity).clearStack()
+        if (activity is BaseActivity<*, *>) {
+            (activity as BaseActivity<*, *>).clearStack()
         }
     }
 

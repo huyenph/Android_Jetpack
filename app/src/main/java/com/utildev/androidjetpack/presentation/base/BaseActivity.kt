@@ -1,20 +1,44 @@
 package com.utildev.androidjetpack.presentation.base
 
 import android.graphics.Color
+import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.drawerlayout.widget.DrawerLayout
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.common.extensions.isNetworkAvailable
 import com.utildev.androidjetpack.presentation.fragment.other.NotConnectionFragment
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatActivity() {
+    private lateinit var binding: T
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
+
+    abstract fun getBindingVariable(): Int
+
+    abstract fun getViewModel(): V?
+
+    abstract fun init()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, getLayoutId())
+        if (getViewModel() != null) {
+            binding.setVariable(getBindingVariable(), getViewModel())
+            binding.executePendingBindings()
+        }
+        init()
+    }
+
     fun configNavigation(type: Int, elevation: Boolean, scrim: Boolean) {
         val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
         val content: CoordinatorLayout = findViewById(R.id.fmContainer)
