@@ -1,12 +1,42 @@
 package com.utildev.androidjetpack.presentation.base
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
-abstract class BaseFragment: Fragment() {
+abstract class BaseFragment<T: ViewDataBinding, V: BaseViewModel>: Fragment() {
     private var fmResultListener: FragmentResultListener? = null
     private var requestCode = 0
+
+    private lateinit var binding: ViewDataBinding
+    private lateinit var rootView: View
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
+
+    abstract fun getBindingVariable(): Int
+
+    abstract fun getViewModel(): V?
+
+    abstract fun init(view: View)
+
+    fun getViewDataBinding(): ViewDataBinding = binding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
+        if (getViewModel() != null) {
+            binding.setVariable(getBindingVariable(), getViewModel())
+            binding.executePendingBindings()
+        }
+        rootView = binding.root
+        init(rootView)
+        return rootView
+    }
 
     fun configToolbarMain(view: View, title: String?) {
         if (activity is BaseActivity<*, *>) {
@@ -31,13 +61,13 @@ abstract class BaseFragment: Fragment() {
         }
     }
 
-    fun replaceFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
+    fun replaceFragment(fragment: BaseFragment<*, *>, addToBackStack: Boolean, animation: Boolean) {
         if (activity is BaseActivity<*, *>) {
             (activity as BaseActivity<*, *>).replaceFragment(fragment, addToBackStack, animation)
         }
     }
 
-    fun addFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
+    fun addFragment(fragment: BaseFragment<*, *>, addToBackStack: Boolean, animation: Boolean) {
         if (activity is BaseActivity<*, *>) {
             (activity as BaseActivity<*, *>).addFragment(fragment, addToBackStack, animation)
         }

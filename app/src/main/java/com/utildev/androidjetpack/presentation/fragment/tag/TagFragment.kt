@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.utildev.androidjetpack.BR
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.data.remote.response.tag.TagItemResponse
 import com.utildev.androidjetpack.presentation.base.BaseFragment
@@ -19,9 +20,9 @@ import kotlinx.android.synthetic.main.fragment_tag.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class TagFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.FragmentUpdateListener {
+class TagFragment: BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapter.AdapterListener, MyPagerAdapter.FragmentUpdateListener {
     private val vm: TagViewModel by viewModel()
-    private lateinit var mView: View
+//    private lateinit var mView: View
 
     private var tagLm: GridLayoutManager? = null
     private var tagAdapter: TagAdapter? = null
@@ -29,6 +30,35 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.F
 
     private var page = 0
     private var prePos = 0
+
+    private lateinit var binding: FragmentTagBinding
+
+    override fun getLayoutId(): Int = R.layout.fragment_tag
+
+    override fun getBindingVariable(): Int = BR.vm
+
+    override fun getViewModel(): TagViewModel? = vm
+
+    override fun init(view: View) {
+        binding = getViewDataBinding() as FragmentTagBinding
+
+        tags = ArrayList()
+        tagLm = GridLayoutManager(context, 1)
+        tagAdapter = TagAdapter(binding.fmTagRv, tagLm!!, this)
+
+        binding.fmTagRv.run {
+            layoutManager = tagLm
+            adapter = tagAdapter
+            setHasFixedSize(true)
+        }
+        binding.fmTagSrl.setOnRefreshListener {
+            page = 1
+            tags!!.clear()
+            tagAdapter!!.set(tags!!)
+            vm.getTag((activity as MainActivity).siteParam, page, true)
+            binding.fmTagSrl.isRefreshing = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +76,14 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.F
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding: FragmentTagBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_tag, container, false)
-        binding.vm = vm
-        mView = binding.root
-        init()
-        return mView
-    }
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        binding =
+//            DataBindingUtil.inflate(inflater, R.layout.fragment_tag, container, false)
+//        binding.vm = vm
+//        mView = binding.root
+//        init()
+//        return mView
+//    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -73,7 +103,7 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.F
                 page = savedInstanceState.getInt("tag_page")
                 tags!!.addAll(savedInstanceState.getSerializable("tag") as ArrayList<TagItemResponse>)
                 tagAdapter!!.set(tags!!)
-                mView.fmTag_rv.smoothScrollToPosition(prePos)
+                binding.fmTagRv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
                 page = 1
@@ -101,25 +131,11 @@ class TagFragment: BaseFragment(), BaseAdapter.AdapterListener, MyPagerAdapter.F
             tags!!.clear()
             tagAdapter!!.set(tags!!)
             vm.getTag((activity as MainActivity).siteParam, page, true)
-            mView.fmTag_srl.isRefreshing = false
+            binding.fmTagSrl.isRefreshing = false
         }
     }
 
-    private fun init() {
-        tags = ArrayList()
-        tagLm = GridLayoutManager(context, 1)
-        tagAdapter = TagAdapter(mView.fmTag_rv, tagLm!!, this)
-        mView.fmTag_rv.run {
-            layoutManager = tagLm
-            adapter = tagAdapter
-            setHasFixedSize(true)
-        }
-        mView.fmTag_srl.setOnRefreshListener {
-            page = 1
-            tags!!.clear()
-            tagAdapter!!.set(tags!!)
-            vm.getTag((activity as MainActivity).siteParam, page, true)
-            mView.fmTag_srl.isRefreshing = false
-        }
-    }
+//    private fun init() {
+//
+//    }
 }

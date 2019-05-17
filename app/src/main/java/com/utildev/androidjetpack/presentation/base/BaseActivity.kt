@@ -99,7 +99,7 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
     }
 
     private fun transactionFragment(
-        fragment: BaseFragment,
+        fragment: BaseFragment<*, *>,
         replace: Boolean,
         addToBackStack: Boolean,
         animation: Boolean
@@ -130,7 +130,7 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
         fmTransaction.commit()
     }
 
-    fun replaceFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
+    fun replaceFragment(fragment: BaseFragment<*, *>, addToBackStack: Boolean, animation: Boolean) {
         transactionFragment(
             if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
             true,
@@ -139,7 +139,7 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
         )
     }
 
-    fun addFragment(fragment: BaseFragment, addToBackStack: Boolean, animation: Boolean) {
+    fun addFragment(fragment: BaseFragment<*, *>, addToBackStack: Boolean, animation: Boolean) {
         transactionFragment(
             if (isNetworkAvailable(this)) fragment else NotConnectionFragment(),
             false,
