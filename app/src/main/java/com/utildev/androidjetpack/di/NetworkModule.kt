@@ -3,6 +3,7 @@ package com.utildev.androidjetpack.di
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.utildev.androidjetpack.BuildConfig
+import com.utildev.androidjetpack.common.helper.HttpInterceptor
 import com.utildev.androidjetpack.data.remote.ApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -26,6 +27,7 @@ fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
     .readTimeout(1, TimeUnit.MINUTES)
     .writeTimeout(1, TimeUnit.MINUTES)
     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+    .addInterceptor(HttpInterceptor())
 //    .addInterceptor { chain ->
 //        val request = chain.request().newBuilder().addHeader("", "").build()
 //        chain.proceed(request)

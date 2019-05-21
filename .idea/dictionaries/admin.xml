@@ -2,6 +2,7 @@
   <dictionary name="admin">
     <words>
       <w>coroutines</w>
+      <w>doctype</w>
       <w>gson</w>
       <w>koin</w>
       <w>lifecycles</w>
