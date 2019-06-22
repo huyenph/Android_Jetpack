@@ -16,12 +16,12 @@ class MyPagerAdapter(fragmentManager: FragmentManager) :
 
     override fun getItem(position: Int): BaseFragment<*, *> {
         return when (position) {
-//            0 -> TagFragment()
-//            1 -> QuestionFragment()
-//            else -> UserFragment()
             0 -> TagFragment()
-            1 -> TagFragment()
-            else -> TagFragment()
+            1 -> QuestionFragment()
+            else -> UserFragment()
+//            0 -> TagFragment()
+//            1 -> TagFragment()
+//            else -> TagFragment()
         }
     }
 

@@ -10,8 +10,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
 
-class ApiClient(private val responseListener: ResponseListener) {
-    private val compositeDisposable = CompositeDisposable()
+class ApiClient(private val responseListener: ResponseListener, private val compositeDisposable: CompositeDisposable) {
 
     fun request(code: Int, type: Type?, observable: Observable<JsonObject>) {
         val disposable = observable

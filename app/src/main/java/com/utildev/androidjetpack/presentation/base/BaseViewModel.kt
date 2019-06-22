@@ -9,6 +9,7 @@ import com.google.gson.JsonObject
 import com.utildev.androidjetpack.common.extensions.REQUEST_ERROR
 import com.utildev.androidjetpack.data.remote.ApiClient
 import com.utildev.androidjetpack.data.repository.Repository
+import io.reactivex.disposables.CompositeDisposable
 import java.lang.reflect.Type
 
 @Suppress("LeakingThis")
@@ -18,7 +19,8 @@ abstract class BaseViewModel(private val repository: Repository): ViewModel(), A
     val message: ObservableField<String> = ObservableField()
     val enabledView = ObservableBoolean(false)
 
-    val apiClient = ApiClient(this)
+    private val compositeDisposable = CompositeDisposable()
+    val apiClient = ApiClient(this, compositeDisposable)
 
     fun showLoading() {
         if (loadingView.get() != View.VISIBLE) {
@@ -59,6 +61,6 @@ abstract class BaseViewModel(private val repository: Repository): ViewModel(), A
 
     override fun onCleared() {
         super.onCleared()
-        apiClient.dispose()
+        compositeDisposable.dispose()
     }
 }

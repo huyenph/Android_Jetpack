@@ -17,9 +17,11 @@ abstract class BaseAdapter(
     private val adapterListener: AdapterListener?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var items: MutableList<Any> = ArrayList()
-    var mItemCount = 0
     var isLoading = true
     var isEndList = false
+
+    private var mItemCount = 0
+    private var isScroll = false
 
     companion object {
         const val TYPE_BLANK = 666
@@ -37,6 +39,7 @@ abstract class BaseAdapter(
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dy > 0) {
+                        isScroll = true
                         visibleItemCount = layoutManager.childCount
                         totalItemCount = layoutManager.itemCount
                         firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
@@ -46,6 +49,8 @@ abstract class BaseAdapter(
                                 isLoading = false
                             }
                         }
+                    } else {
+                        isScroll = false
                     }
                 }
             })
@@ -88,7 +93,7 @@ abstract class BaseAdapter(
                 else -> {
                     when (position) {
                         0 -> if (headerRes != 0) TYPE_HEADER else position
-                        mItemCount - 1 -> TYPE_LOADING
+                        mItemCount - 1 -> if (isScroll) TYPE_LOADING else TYPE_BLANK
                         mItemCount - 2 -> if (footerRes != 0) TYPE_FOOTER else position
                         else -> position
                     }
