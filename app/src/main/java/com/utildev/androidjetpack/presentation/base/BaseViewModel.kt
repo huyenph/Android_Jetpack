@@ -54,9 +54,13 @@ abstract class BaseViewModel(private val repository: Repository): ViewModel(), A
         hideMessage()
     }
 
-    override fun onFailure() {
+    override fun onFailure(code: Int, type: Type?) {
         dismissLoading()
         showMessage(REQUEST_ERROR)
+    }
+
+    override fun onNextAction(code: Int) {
+
     }
 
     override fun onCleared() {

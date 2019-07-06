@@ -19,7 +19,9 @@ class ApiClient(private val responseListener: ResponseListener, private val comp
             .subscribe({
                 responseListener.onSuccess(code, type, it)
             }, {
-                responseListener.onFailure()
+                responseListener.onFailure(code, type)
+            }, {
+                responseListener.onNextAction(code)
             })
         compositeDisposable.add(disposable)
     }
@@ -31,17 +33,14 @@ class ApiClient(private val responseListener: ResponseListener, private val comp
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                responseListener.onFailure()
+                responseListener.onFailure(code, type)
             }
         })
     }
 
-    fun dispose() {
-        compositeDisposable.dispose()
-    }
-
     interface ResponseListener {
         fun onSuccess(code: Int, type: Type?, response: JsonObject)
-        fun onFailure()
+        fun onFailure(code: Int, type: Type?)
+        fun onNextAction(code: Int)
     }
 }
