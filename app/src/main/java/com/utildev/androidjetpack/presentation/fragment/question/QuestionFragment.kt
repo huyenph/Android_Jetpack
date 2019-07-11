@@ -22,9 +22,9 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
     private val vm: QuestionViewModel by viewModel()
     private lateinit var binding: FragmentQuestionBinding
 
-    private var questionLm: GridLayoutManager? = null
-    private var questionAdapter: QuestionAdapter? = null
-    private var questions: ArrayList<QuestionItemResponse>? = null
+    private lateinit var questionLm: GridLayoutManager
+    private lateinit var questionAdapter: QuestionAdapter
+    private val questions: ArrayList<QuestionItemResponse> = ArrayList()
 
     private var page = 0
     private var prePos = 0
@@ -34,12 +34,12 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
         vm.questionLive.observe(this, Observer {
             if (it != null) {
                 if (it.size == 0) {
-                    questionAdapter!!.isEndList = true
-                    questionAdapter!!.notifyDataSetChanged()
+                    questionAdapter.isEndList = true
+                    questionAdapter.notifyDataSetChanged()
                 } else {
-                    questions!!.addAll(it)
-                    questionAdapter!!.set(questions!!)
-                    questionAdapter!!.isLoading = true
+                    questions.addAll(it)
+                    questionAdapter.set(questions)
+                    questionAdapter.isLoading = true
                 }
             }
         })
@@ -54,7 +54,6 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
     override fun init(view: View) {
         binding = getViewDataBinding() as FragmentQuestionBinding
 
-        questions = ArrayList()
         questionLm = GridLayoutManager(context, 1)
         questionAdapter = QuestionAdapter(binding.fmQuestionRv, questionLm, this)
 
@@ -66,8 +65,8 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
 
         binding.fmQuestionSrl.setOnRefreshListener {
             page = 1
-            questions!!.clear()
-            questionAdapter!!.set(questions!!)
+            questions.clear()
+            questionAdapter.set(questions)
             vm.getQuestion((activity as MainActivity).siteParam, page, true)
             binding.fmQuestionSrl.isRefreshing = false
         }
@@ -75,7 +74,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val position = questionLm!!.findFirstVisibleItemPosition()
+        val position = questionLm.findFirstVisibleItemPosition()
         outState.putString("question_site", (activity as MainActivity).siteParam)
         outState.putInt("question_position", position)
         outState.putInt("question_page", page + 1)
@@ -89,8 +88,8 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
             if (preSite == (activity as MainActivity).siteParam) {
                 prePos = savedInstanceState.getInt("question_position")
                 page = savedInstanceState.getInt("question_page")
-                questions!!.addAll(savedInstanceState.getSerializable("question") as ArrayList<QuestionItemResponse>)
-                questionAdapter!!.set(questions!!)
+                questions.addAll(savedInstanceState.getSerializable("question") as ArrayList<QuestionItemResponse>)
+                questionAdapter.set(questions)
                 binding.fmQuestionRv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
@@ -115,8 +114,8 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
 
     override fun onUpdate() {
         page = 1
-        questions!!.clear()
-        questionAdapter!!.set(questions!!)
+        questions.clear()
+        questionAdapter.set(questions)
         vm.getQuestion((activity as MainActivity).siteParam, page, true)
         binding.fmQuestionSrl.isRefreshing = false
     }

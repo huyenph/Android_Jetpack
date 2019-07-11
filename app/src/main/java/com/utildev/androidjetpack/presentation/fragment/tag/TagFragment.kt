@@ -22,9 +22,9 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
     private val vm: TagViewModel by viewModel()
     private lateinit var binding: FragmentTagBinding
 
-    private var tagLm: GridLayoutManager? = null
-    private var tagAdapter: TagAdapter? = null
-    private var tags: ArrayList<TagItemResponse>? = null
+    private lateinit var tagLm: GridLayoutManager
+    private lateinit var tagAdapter: TagAdapter
+    private val tags: ArrayList<TagItemResponse> = ArrayList()
 
     private var page = 0
     private var prePos = 0
@@ -34,12 +34,12 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
         vm.tagLive.observe(this, Observer {
             if (it != null) {
                 if (it.size == 0) {
-                    tagAdapter!!.isEndList = true
-                    tagAdapter!!.notifyDataSetChanged()
+                    tagAdapter.isEndList = true
+                    tagAdapter.notifyDataSetChanged()
                 } else {
-                    tags!!.addAll(it)
-                    tagAdapter!!.set(tags!!)
-                    tagAdapter!!.isLoading = true
+                    tags.addAll(it)
+                    tagAdapter.set(tags)
+                    tagAdapter.isLoading = true
                 }
             }
         })
@@ -54,9 +54,8 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
     override fun init(view: View) {
         binding = getViewDataBinding() as FragmentTagBinding
 
-        tags = ArrayList()
         tagLm = GridLayoutManager(context, 1)
-        tagAdapter = TagAdapter(binding.fmTagRv, tagLm!!, this)
+        tagAdapter = TagAdapter(binding.fmTagRv, tagLm, this)
 
         binding.fmTagRv.run {
             layoutManager = tagLm
@@ -65,8 +64,8 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
         }
         binding.fmTagSrl.setOnRefreshListener {
             page = 1
-            tags!!.clear()
-            tagAdapter!!.set(tags!!)
+            tags.clear()
+            tagAdapter.set(tags)
             vm.getTag((activity as MainActivity).siteParam, page, true)
             binding.fmTagSrl.isRefreshing = false
         }
@@ -74,7 +73,7 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val position = tagLm!!.findFirstVisibleItemPosition()
+        val position = tagLm.findFirstVisibleItemPosition()
         outState.putString("tag_site", (activity as MainActivity).siteParam)
         outState.putInt("tag_position", position)
         outState.putInt("tag_page", page + 1)
@@ -88,8 +87,8 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
             if (preSite == (activity as MainActivity).siteParam) {
                 prePos = savedInstanceState.getInt("tag_position")
                 page = savedInstanceState.getInt("tag_page")
-                tags!!.addAll(savedInstanceState.getSerializable("tag") as ArrayList<TagItemResponse>)
-                tagAdapter!!.set(tags!!)
+                tags.addAll(savedInstanceState.getSerializable("tag") as ArrayList<TagItemResponse>)
+                tagAdapter.set(tags)
                 binding.fmTagRv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
@@ -115,8 +114,8 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
     override fun onUpdate() {
         if (activity is MainActivity) {
             page = 1
-            tags!!.clear()
-            tagAdapter!!.set(tags!!)
+            tags.clear()
+            tagAdapter.set(tags)
             vm.getTag((activity as MainActivity).siteParam, page, true)
             binding.fmTagSrl.isRefreshing = false
         }

@@ -22,9 +22,9 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
     private val vm: UserViewModel by viewModel()
     private lateinit var binding: FragmentUserBinding
 
-    private var userLm: GridLayoutManager? = null
-    private var userAdapter: UserAdapter? = null
-    private var users: ArrayList<UserItemResponse>? = null
+    private lateinit var userLm: GridLayoutManager
+    private lateinit var userAdapter: UserAdapter
+    private val users: ArrayList<UserItemResponse> = ArrayList()
 
     private var page = 0
     private var prePos = 0
@@ -34,12 +34,12 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
         vm.userLive.observe(this, Observer {
             if (it != null) {
                 if (it.size == 0) {
-                    userAdapter!!.isEndList = true
-                    userAdapter!!.notifyDataSetChanged()
+                    userAdapter.isEndList = true
+                    userAdapter.notifyDataSetChanged()
                 } else {
-                    users!!.addAll(it)
-                    userAdapter!!.set(users!!)
-                    userAdapter!!.isLoading = true
+                    users.addAll(it)
+                    userAdapter.set(users)
+                    userAdapter.isLoading = true
                 }
             }
         })
@@ -54,9 +54,8 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
     override fun init(view: View) {
         binding = getViewDataBinding() as FragmentUserBinding
 
-        users = ArrayList()
         userLm = GridLayoutManager(context, 1)
-        userAdapter = UserAdapter(binding.fmUserRv, userLm!!, this)
+        userAdapter = UserAdapter(binding.fmUserRv, userLm, this)
 
         binding.fmUserRv.run {
             layoutManager = userLm
@@ -66,8 +65,8 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
 
         binding.fmUserSrl.setOnRefreshListener {
             page = 1
-            users!!.clear()
-            userAdapter!!.set(users!!)
+            users.clear()
+            userAdapter.set(users)
             vm.getUser((activity as MainActivity).siteParam, page, true)
             binding.fmUserSrl.isRefreshing = false
         }
@@ -75,7 +74,7 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val position = userLm!!.findFirstVisibleItemPosition()
+        val position = userLm.findFirstVisibleItemPosition()
         outState.putString("user_site", (activity as MainActivity).siteParam)
         outState.putInt("user_position", position)
         outState.putInt("user_page", page + 1)
@@ -89,8 +88,8 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
             if (preSite == (activity as MainActivity).siteParam) {
                 prePos = savedInstanceState.getInt("user_position")
                 page = savedInstanceState.getInt("user_page")
-                users!!.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
-                userAdapter!!.set(users!!)
+                users.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
+                userAdapter.set(users)
                 binding.fmUserRv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
@@ -115,8 +114,8 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
 
     override fun onUpdate() {
         page = 1
-        users!!.clear()
-        userAdapter!!.set(users!!)
+        users.clear()
+        userAdapter.set(users)
         vm.getUser((activity as MainActivity).siteParam, page, true)
         binding.fmUserSrl.isRefreshing = false
     }

@@ -36,8 +36,16 @@ interface ApiService {
                     @Query("site") site: String,
                     @Query("page") page: Int): Observable<JsonObject>
 
+    @GET("users?key=KCTJhLJ5*JRozzNhBK20og((")
+    fun requestUser1(@Query("order") order: String,
+                    @Query("sort") sort: String,
+                    @Query("site") site: String,
+                    @Query("page") page: Int): Call<JsonObject>
+
     @GET("sites?key=KCTJhLJ5*JRozzNhBK20og((")
     fun requestAllSite(@Query("page") page: Int): Call<JsonObject>
+
+
 
     @POST("")
     fun requestBody(@Body body: RequestBody): Observable<JsonObject>
