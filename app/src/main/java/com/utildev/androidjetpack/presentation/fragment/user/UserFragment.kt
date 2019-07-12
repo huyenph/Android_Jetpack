@@ -14,13 +14,13 @@ import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.UserAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
+import kotlinx.android.synthetic.main.fragment_user.view.*
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAdapter.AdapterListener,
     MyPagerAdapter.FragmentUpdateListener {
 
     private val vm: UserViewModel by viewModel()
-    private lateinit var binding: FragmentUserBinding
 
     private lateinit var userLm: GridLayoutManager
     private lateinit var userAdapter: UserAdapter
@@ -52,23 +52,21 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
     override fun getViewModel(): UserViewModel? = vm
 
     override fun init(view: View) {
-        binding = getViewDataBinding() as FragmentUserBinding
-
         userLm = GridLayoutManager(context, 1)
-        userAdapter = UserAdapter(binding.fmUserRv, userLm, this)
+        userAdapter = UserAdapter(view.fmUser_rv, userLm, this)
 
-        binding.fmUserRv.run {
+        view.fmUser_rv.run {
             layoutManager = userLm
             adapter = userAdapter
             setHasFixedSize(true)
         }
 
-        binding.fmUserSrl.setOnRefreshListener {
+        view.fmUser_srl.setOnRefreshListener {
             page = 1
             users.clear()
             userAdapter.set(users)
             vm.getUser((activity as MainActivity).siteParam, page, true)
-            binding.fmUserSrl.isRefreshing = false
+            view.fmUser_srl.isRefreshing = false
         }
     }
 
@@ -90,7 +88,7 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
                 page = savedInstanceState.getInt("user_page")
                 users.addAll(savedInstanceState.getSerializable("user") as ArrayList<UserItemResponse>)
                 userAdapter.set(users)
-                binding.fmUserRv.smoothScrollToPosition(prePos)
+                view!!.fmUser_rv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
                 page = 1
@@ -117,6 +115,6 @@ class UserFragment : BaseFragment<FragmentUserBinding, UserViewModel>(), BaseAda
         users.clear()
         userAdapter.set(users)
         vm.getUser((activity as MainActivity).siteParam, page, true)
-        binding.fmUserSrl.isRefreshing = false
+        view!!.fmUser_srl.isRefreshing = false
     }
 }

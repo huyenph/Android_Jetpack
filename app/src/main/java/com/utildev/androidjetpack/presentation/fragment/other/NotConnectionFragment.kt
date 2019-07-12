@@ -5,11 +5,9 @@ import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.base.BaseFragment
 import com.utildev.androidjetpack.databinding.FragmentNotConnectionBinding
-import org.koin.android.viewmodel.ext.android.viewModel
+import kotlinx.android.synthetic.main.fragment_not_connection.view.*
 
 class NotConnectionFragment: BaseFragment<FragmentNotConnectionBinding, NotConnectionViewModel>() {
-    private val vm: NotConnectionViewModel by viewModel()
-    private lateinit var binding: FragmentNotConnectionBinding
 
     override fun getLayoutId(): Int = R.layout.fragment_not_connection
 
@@ -18,9 +16,7 @@ class NotConnectionFragment: BaseFragment<FragmentNotConnectionBinding, NotConne
     override fun getViewModel(): NotConnectionViewModel? = null
 
     override fun init(view: View) {
-        binding = getViewDataBinding() as FragmentNotConnectionBinding
-
-        binding.fmNoConnectionBtRetry.setOnClickListener {
+        view.fmNoConnection_btRetry.setOnClickListener {
             val intent = (activity as MainActivity).intent
             (activity as MainActivity).finish()
             (activity as MainActivity).startActivity(intent)

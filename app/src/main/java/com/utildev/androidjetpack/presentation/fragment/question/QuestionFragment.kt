@@ -14,13 +14,13 @@ import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.QuestionAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
+import kotlinx.android.synthetic.main.fragment_question.view.*
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel>(), BaseAdapter.AdapterListener,
     MyPagerAdapter.FragmentUpdateListener {
 
     private val vm: QuestionViewModel by viewModel()
-    private lateinit var binding: FragmentQuestionBinding
 
     private lateinit var questionLm: GridLayoutManager
     private lateinit var questionAdapter: QuestionAdapter
@@ -52,26 +52,25 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
     override fun getViewModel(): QuestionViewModel? = vm
 
     override fun init(view: View) {
-        binding = getViewDataBinding() as FragmentQuestionBinding
-
         questionLm = GridLayoutManager(context, 1)
-        questionAdapter = QuestionAdapter(binding.fmQuestionRv, questionLm, this)
+        questionAdapter = QuestionAdapter(view.fmQuestion_rv, questionLm, this)
 
-        binding.fmQuestionRv.run {
+        view.fmQuestion_rv.run {
             layoutManager = questionLm
             adapter = questionAdapter
             setHasFixedSize(true)
         }
 
-        binding.fmQuestionSrl.setOnRefreshListener {
+        view.fmQuestion_srl.setOnRefreshListener {
+            view.fmQuestion_srl.isRefreshing = false
             page = 1
             questions.clear()
             questionAdapter.set(questions)
             vm.getQuestion((activity as MainActivity).siteParam, page, true)
-            binding.fmQuestionSrl.isRefreshing = false
         }
     }
 
+    // save instance on stop
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val position = questionLm.findFirstVisibleItemPosition()
@@ -81,6 +80,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
         outState.putSerializable("question", questions)
     }
 
+    // restore previous state
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
@@ -90,7 +90,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
                 page = savedInstanceState.getInt("question_page")
                 questions.addAll(savedInstanceState.getSerializable("question") as ArrayList<QuestionItemResponse>)
                 questionAdapter.set(questions)
-                binding.fmQuestionRv.smoothScrollToPosition(prePos)
+                view!!.fmQuestion_rv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
                 page = 1
@@ -117,6 +117,6 @@ class QuestionFragment : BaseFragment<FragmentQuestionBinding, QuestionViewModel
         questions.clear()
         questionAdapter.set(questions)
         vm.getQuestion((activity as MainActivity).siteParam, page, true)
-        binding.fmQuestionSrl.isRefreshing = false
+        view!!.fmQuestion_srl.isRefreshing = false
     }
 }

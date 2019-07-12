@@ -29,6 +29,8 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
 
     abstract fun init()
 
+    fun getViewDataBinding(): T = binding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, getLayoutId())

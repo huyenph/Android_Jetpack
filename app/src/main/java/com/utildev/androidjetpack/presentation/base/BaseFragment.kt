@@ -10,11 +10,11 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<T: ViewDataBinding, V: BaseViewModel>: Fragment() {
+    private lateinit var binding: T
+    private lateinit var rootView: View
+
     private var fmResultListener: FragmentResultListener? = null
     private var requestCode = 0
-
-    private lateinit var binding: ViewDataBinding
-    private lateinit var rootView: View
 
     @LayoutRes
     abstract fun getLayoutId(): Int
@@ -25,7 +25,7 @@ abstract class BaseFragment<T: ViewDataBinding, V: BaseViewModel>: Fragment() {
 
     abstract fun init(view: View)
 
-    fun getViewDataBinding(): ViewDataBinding = binding
+    fun getViewDataBinding(): T = binding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)

@@ -13,6 +13,7 @@ import com.utildev.androidjetpack.presentation.activity.MainActivity
 import com.utildev.androidjetpack.presentation.adapter.MyPagerAdapter
 import com.utildev.androidjetpack.presentation.adapter.TagAdapter
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
+import kotlinx.android.synthetic.main.fragment_tag.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -20,7 +21,6 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
     MyPagerAdapter.FragmentUpdateListener {
 
     private val vm: TagViewModel by viewModel()
-    private lateinit var binding: FragmentTagBinding
 
     private lateinit var tagLm: GridLayoutManager
     private lateinit var tagAdapter: TagAdapter
@@ -52,22 +52,20 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
     override fun getViewModel(): TagViewModel? = vm
 
     override fun init(view: View) {
-        binding = getViewDataBinding() as FragmentTagBinding
-
         tagLm = GridLayoutManager(context, 1)
-        tagAdapter = TagAdapter(binding.fmTagRv, tagLm, this)
+        tagAdapter = TagAdapter(view.fmTag_rv, tagLm, this)
 
-        binding.fmTagRv.run {
+        view.fmTag_rv.run {
             layoutManager = tagLm
             adapter = tagAdapter
             setHasFixedSize(true)
         }
-        binding.fmTagSrl.setOnRefreshListener {
+        view.fmTag_srl.setOnRefreshListener {
+            view.fmTag_srl.isRefreshing = false
             page = 1
             tags.clear()
             tagAdapter.set(tags)
             vm.getTag((activity as MainActivity).siteParam, page, true)
-            binding.fmTagSrl.isRefreshing = false
         }
     }
 
@@ -89,7 +87,7 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
                 page = savedInstanceState.getInt("tag_page")
                 tags.addAll(savedInstanceState.getSerializable("tag") as ArrayList<TagItemResponse>)
                 tagAdapter.set(tags)
-                binding.fmTagRv.smoothScrollToPosition(prePos)
+                view!!.fmTag_rv.smoothScrollToPosition(prePos)
             } else {
                 prePos = 0
                 page = 1
@@ -117,7 +115,7 @@ class TagFragment : BaseFragment<FragmentTagBinding, TagViewModel>(), BaseAdapte
             tags.clear()
             tagAdapter.set(tags)
             vm.getTag((activity as MainActivity).siteParam, page, true)
-            binding.fmTagSrl.isRefreshing = false
+            view!!.fmTag_srl.isRefreshing = false
         }
     }
 }
