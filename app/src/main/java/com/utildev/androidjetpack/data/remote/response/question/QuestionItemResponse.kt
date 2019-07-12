@@ -2,7 +2,9 @@ package com.utildev.androidjetpack.data.remote.response.question
 
 import com.google.gson.annotations.SerializedName
 import com.utildev.androidjetpack.data.BaseModel
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class QuestionItemResponse(
     @SerializedName("tags") val tags: List<String>? = null,
     @SerializedName("owner") val owner: QuestionOwnerResponse? = null,
@@ -19,6 +21,6 @@ data class QuestionItemResponse(
     @SerializedName("closed_reason") val closedReason: String? = null,
     @SerializedName("title") val title: String? = null,
     @SerializedName("accepted_answer_id") val acceptedAnswerId: Int = 0
-) : BaseModel() {
+) {
     fun convertTags() = tags!!.joinToString()
 }
