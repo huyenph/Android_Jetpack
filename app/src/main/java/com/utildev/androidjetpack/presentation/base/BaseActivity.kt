@@ -3,19 +3,19 @@ package com.utildev.androidjetpack.presentation.base
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.drawerlayout.widget.DrawerLayout
 import com.utildev.androidjetpack.R
 import com.utildev.androidjetpack.common.extensions.isNetworkAvailable
 import com.utildev.androidjetpack.presentation.fragment.other.NotConnectionFragment
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.toolbar.view.*
+import kotlinx.android.synthetic.main.toolbar_main.view.*
 
 abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatActivity() {
     private lateinit var binding: T
@@ -42,12 +42,10 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
     }
 
     fun configNavigation(type: Int, elevation: Boolean, scrim: Boolean) {
-        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
-        val content: CoordinatorLayout = findViewById(R.id.fmContainer)
-        if (!scrim) drawer.setScrimColor(Color.TRANSPARENT)
-        if (!elevation) drawer.drawerElevation = 0f
+        if (!scrim) actMain_dl.setScrimColor(Color.TRANSPARENT)
+        if (!elevation) actMain_dl.drawerElevation = 0f
         val toggle =
-            object : ActionBarDrawerToggle(this, drawer, R.string.open_navigation, R.string.close_navigation) {
+            object : ActionBarDrawerToggle(this, actMain_dl, R.string.open_navigation, R.string.close_navigation) {
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                     super.onDrawerSlide(drawerView, slideOffset)
                     val slideX = drawerView.width * slideOffset
@@ -57,41 +55,36 @@ abstract class BaseActivity<T: ViewDataBinding, V: BaseViewModel> : AppCompatAct
                         }
                         // Slide content
                         1 -> {
-                            content.translationX = slideX
+                            fmContainer.translationX = slideX
                         }
                         // Slide + scale full screen
                         2 -> {
-                            content.translationX = slideX
-                            content.scaleX = 1 - slideOffset
-                            content.scaleY = 1 - slideOffset
+                            fmContainer.translationX = slideX
+                            fmContainer.scaleX = 1 - slideOffset
+                            fmContainer.scaleY = 1 - slideOffset
                         }
                         // Slide + scale 1
                         3 -> {
-                            content.translationX = slideX
-                            content.scaleX = 1 - (slideOffset / 8f)
-                            content.scaleY = 1 - (slideOffset / 8f)
+                            fmContainer.translationX = slideX
+                            fmContainer.scaleX = 1 - (slideOffset / 8f)
+                            fmContainer.scaleY = 1 - (slideOffset / 8f)
                         }
                     }
                 }
             }
-        drawer.addDrawerListener(toggle)
+        actMain_dl.addDrawerListener(toggle)
     }
 
     fun configToolbarMain(view: View, title: String?) {
-        val drawer: DrawerLayout = findViewById(R.id.actMain_dl)
-        val ivNav: ImageView = view.findViewById(R.id.tbMain_ivNav)
-        val tvTitle: TextView = view.findViewById(R.id.tbMain_tvTitle)
-        tvTitle.text = title
-        ivNav.setOnClickListener {
-            drawer.openDrawer(GravityCompat.START)
+        view.tbMain_tvTitle.text = title
+        view.tbMain_ivNav.setOnClickListener {
+            view.actMain_dl.openDrawer(GravityCompat.START)
         }
     }
 
     fun configToolbar(view: View, title: String?, listener: BackStackListener?) {
-        val ivBack: ImageView = view.findViewById(R.id.tb_ivBack)
-        val tvTitle: TextView = view.findViewById(R.id.tb_tvTitle)
-        tvTitle.text = title
-        ivBack.setOnClickListener {
+        view.tb_tvTitle.text = title
+        view.tb_ivBack.setOnClickListener {
             if (listener != null) {
                 listener.onBack()
             } else {

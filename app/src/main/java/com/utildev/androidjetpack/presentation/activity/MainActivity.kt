@@ -19,6 +19,7 @@ import com.utildev.androidjetpack.presentation.base.BaseActivity
 import com.utildev.androidjetpack.presentation.base.BaseAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import kotlin.math.max
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAdapter.AdapterListener {
     private val vm: MainViewModel by viewModel()
@@ -112,7 +113,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
         actMain_reveal.visibility = View.VISIBLE
         val revealX = actMain_reveal.width
         val revealY = actMain_reveal.height
-        val radius = Math.max(revealX, revealY) * 1.2f
+        val radius = max(revealX, revealY) * 1.2f
         val reveal = ViewAnimationUtils.createCircularReveal(actMain_reveal, x.toInt(), y.toInt(), 0f, radius)
 
         reveal.addListener(object : AnimatorListenerAdapter() {
@@ -135,6 +136,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
                         }, theme
                     )
                 )
+
+                actMain_rvOption.setBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources, when (position) {
+                            0 -> R.color.colorPrimary
+                            1 -> R.color.blue
+                            else -> R.color.colorAccent
+                        }, theme
+                    )
+                )
+
                 actMain_reveal.visibility = View.INVISIBLE
             }
         })
@@ -148,6 +160,16 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), BaseAda
         )
 
         actMain_reveal.setBackgroundColor(
+            ResourcesCompat.getColor(
+                resources, when (position) {
+                    0 -> R.color.colorPrimary
+                    1 -> R.color.blue
+                    else -> R.color.colorAccent
+                }, theme
+            )
+        )
+
+        actMain_rvOption.setBackgroundColor(
             ResourcesCompat.getColor(
                 resources, when (position) {
                     0 -> R.color.colorPrimary
